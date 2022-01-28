@@ -1,6 +1,9 @@
 package com.example.task_rapidchidori_android.ui.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+
 import android.os.Bundle;
 
 import com.example.task_rapidchidori_android.R;
