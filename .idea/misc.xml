@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/task_rapidChidori_Android/app/src/main/res/layout/activity_notes.xml" value="0.1875" />
+        <entry key="..\:/task_rapidChidori_Android/app/src/main/res/layout/activity_splashscreen.xml" value="0.1875" />
+        <entry key="..\:/task_rapidChidori_Android/app/src/main/res/layout/fragment_add_note.xml" value="0.1875" />
+        <entry key="..\:/task_rapidChidori_Android/app/src/main/res/layout/fragment_my_notes.xml" value="0.1875" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.23177083333333334" />
         <entry key="app/src/main/res/layout/activity_notes.xml" value="0.24094202898550723" />
         <entry key="app/src/main/res/layout/fragment_add_note.xml" value="0.24094202898550723" />
