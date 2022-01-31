@@ -39,6 +39,7 @@
         tools:itemCount="5"
         tools:listitem="@layout/notes_child_view" />
 
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_note"
         android:layout_width="wrap_content"
