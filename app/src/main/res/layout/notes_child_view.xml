@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/dp_6"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_10">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Title" />
+
+            <ImageView
+                android:id="@+id/iv_delete"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_delete"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintEnd_toStartOf="@id/iv_delete"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/iv_delete"
+                tools:text="This is a demo description. This needs to be less than 3 lines. If exceeding that than use ellipses in place of this. Thank you so much you have wasted your time by reading this. you will still be reading this i dont know why. Now i am getting tired of typing so go on waste your time on something else. Thanks " />
+
+            <TextView
+                android:id="@+id/tv_due_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_2"
+                android:textColor="@color/red"
+                android:textSize="@dimen/sp_10"
+                app:layout_constraintEnd_toStartOf="@id/tv_added_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_desc"
+                tools:text="12 Jan 2022, 14:00" />
+
+            <TextView
+                android:id="@+id/tv_added_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_2"
+                android:gravity="end"
+                android:textColor="@color/green"
+                android:textSize="@dimen/sp_10"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_due_date"
+                app:layout_constraintTop_toTopOf="@id/tv_due_date"
+                tools:text="12 Jan 2022, 14:00" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

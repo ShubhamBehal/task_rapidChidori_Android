@@ -8,16 +8,20 @@
     <fragment
         android:id="@+id/myNotesFragment"
         android:name="com.example.task_rapidchidori_android.ui.fragments.MyNotesFragment"
-        android:label="fragment_my_notes"
-        tools:layout="@layout/fragment_my_notes" >
+        android:label="@string/my_notes_head"
+        tools:layout="@layout/fragment_my_notes">
         <action
             android:id="@+id/action_myNotesFragment_to_addNoteFragment"
-            app:destination="@id/addNoteFragment" />
+            app:destination="@id/addNoteFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
         android:id="@+id/addNoteFragment"
         android:name="com.example.task_rapidchidori_android.ui.fragments.AddNoteFragment"
-        android:label="fragment_add_note"
+        android:label="@string/add_note_head"
         tools:layout="@layout/fragment_add_note" />
 </navigation>

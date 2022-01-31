@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Notes App</string>
+    <string name="title_hint">Title</string>
+    <string name="title_description">Description</string>
+    <string name="my_notes_head">My Notes</string>
+    <string name="add_note_head">Add Note</string>
+    <string name="due_date_label">Select a due date</string>
+    <string name="images_label">Images</string>
+    <string name="play_audio">Play Audio</string>
+    <string name="delete_audio">Delete Audio</string>
+    <string name="add_subtask">Add a Subtask</string>
+    <string name="mark_completed">Mark as Completed</string>
+    <string name="save_task">Save task</string>
+    <string name="sort_by_date">Sort by Date</string>
+    <string name="sort_by_name">Sort by Name</string>
 </resources>
