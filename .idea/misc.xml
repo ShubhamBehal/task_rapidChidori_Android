@@ -12,6 +12,7 @@
         <entry key="app/src/main/res/drawable/search_background.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.23177083333333334" />
         <entry key="app/src/main/res/layout/activity_notes.xml" value="0.24094202898550723" />
+        <entry key="app/src/main/res/layout/activity_splashscreen.xml" value="0.182518115942029" />
         <entry key="app/src/main/res/layout/categories_child_view.xml" value="0.23777173913043478" />
         <entry key="app/src/main/res/layout/fragment_add_note.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_my_notes.xml" value="0.25" />
