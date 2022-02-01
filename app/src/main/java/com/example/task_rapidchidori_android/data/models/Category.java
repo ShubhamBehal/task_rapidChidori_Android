@@ -10,6 +10,8 @@ public class Category {
     @NonNull
     public String category;
 
+    public boolean isSelected;
+
     public Category(@NonNull String category) {
         this.category = category;
     }

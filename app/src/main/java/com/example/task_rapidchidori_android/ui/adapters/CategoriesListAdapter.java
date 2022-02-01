@@ -6,19 +6,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.Category;
+import com.example.task_rapidchidori_android.ui.interfaces.OnCategorySelect;
 
 import java.util.List;
 
 public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAdapter.ViewHolder> {
 
     private final List<Category> categories;
+    private final OnCategorySelect listener;
 
-    public CategoriesListAdapter(List<Category> categories) {
+    public CategoriesListAdapter(List<Category> categories, OnCategorySelect listener) {
         this.categories = categories;
+        this.listener = listener;
     }
 
     @NonNull
@@ -32,7 +37,20 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
-        viewHolder.tvCategory.setText(categories.get(position).category);
+        String category = categories.get(position).category;
+        boolean isSelected = categories.get(position).isSelected;
+        if (isSelected) {
+            viewHolder.tvCategory
+                    .setTextColor(ContextCompat.getColor(viewHolder.tvCategory.getContext(),
+                            R.color.white));
+        } else {
+            viewHolder.tvCategory
+                    .setTextColor(ContextCompat.getColor(viewHolder.tvCategory.getContext(),
+                            R.color.black));
+        }
+        viewHolder.clRoot.setSelected(isSelected);
+        viewHolder.tvCategory.setText(category);
+        viewHolder.clRoot.setOnClickListener(view -> listener.onCategorySelect(category));
     }
 
     @Override
@@ -48,10 +66,12 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvCategory;
+        ConstraintLayout clRoot;
 
         public ViewHolder(View view) {
             super(view);
             tvCategory = view.findViewById(R.id.tv_category);
+            clRoot = view.findViewById(R.id.cl_root);
         }
     }
 }

@@ -26,6 +26,7 @@ import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.Category;
 import com.example.task_rapidchidori_android.helper.SharedPrefsUtil;
 import com.example.task_rapidchidori_android.ui.adapters.CategoriesListAdapter;
+import com.example.task_rapidchidori_android.ui.interfaces.OnCategorySelect;
 import com.example.task_rapidchidori_android.ui.viewmodels.MyNotesViewModel;
 import com.example.task_rapidchidori_android.ui.viewmodels.factory.MyNotesViewModelFactory;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -34,7 +35,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyNotesFragment extends Fragment implements View.OnClickListener {
+public class MyNotesFragment extends Fragment implements View.OnClickListener, OnCategorySelect {
 
     private FloatingActionButton fabAdd;
     private ExtendedFloatingActionButton fabAddNotes;
@@ -47,6 +48,7 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener {
     private MyNotesViewModel viewModel;
     private RecyclerView rvCategories;
     private CategoriesListAdapter categoriesListAdapter;
+    private List<Category> categories;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,7 +98,7 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener {
         animForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
         animBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward);
 
-        categoriesListAdapter = new CategoriesListAdapter(new ArrayList<>());
+        categoriesListAdapter = new CategoriesListAdapter(new ArrayList<>(), this);
         rvCategories.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         rvCategories.setAdapter(categoriesListAdapter);
@@ -112,6 +114,7 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showCategoryList(List<Category> categories) {
+        this.categories = categories;
         categoriesListAdapter.setData(categories);
     }
 
@@ -179,6 +182,14 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         SharedPrefsUtil.getInstance().setAlreadyLaunched(requireActivity(), true);
+    }
+
+    @Override
+    public void onCategorySelect(String category) {
+        for (Category c : categories) {
+            c.isSelected = c.category.equalsIgnoreCase(category);
+        }
+        categoriesListAdapter.setData(categories);
     }
 }
 

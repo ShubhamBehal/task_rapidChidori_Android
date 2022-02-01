@@ -34,7 +34,9 @@ public class CategoryRepo {
             public void run() {
                 super.run();
                 List<Category> categories = new ArrayList<>();
-                categories.add(new Category("Work"));
+                Category work = new Category("Work");
+                work.isSelected = true;
+                categories.add(work);
                 categories.add(new Category("School"));
                 categories.add(new Category("Shopping"));
                 categories.add(new Category("Groceries"));
