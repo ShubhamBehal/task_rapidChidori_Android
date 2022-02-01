@@ -169,6 +169,10 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
             m.setOptionalIconsVisible(true);
         }
         super.onCreateOptionsMenu(menu, inflater);
+        if(menu instanceof MenuBuilder){
+            MenuBuilder m = (MenuBuilder) menu;
+            m.setOptionalIconsVisible(true);
+        }
     }
 
     public void animateFAB() {
