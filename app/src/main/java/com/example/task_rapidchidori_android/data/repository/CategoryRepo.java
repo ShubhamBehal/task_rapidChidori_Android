@@ -60,4 +60,17 @@ public class CategoryRepo {
     public MutableLiveData<List<Category>> getCategoryLiveData() {
         return categoryLiveData;
     }
+
+    public void addCategoryToRepo(String category) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                database.categoryDao().insert(new Category(category));
+
+                categoryLiveData.postValue(database.categoryDao().getAllCategories());
+            }
+        };
+        thread.start();
+    }
 }

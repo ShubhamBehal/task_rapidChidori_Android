@@ -29,4 +29,8 @@ public class MyNotesViewModel extends ViewModel {
     public MutableLiveData<List<Category>> getCategoryLiveData() {
         return repo.getCategoryLiveData();
     }
+
+    public void addCategoryToRepo(String category) {
+        repo.addCategoryToRepo(category);
+    }
 }

@@ -1,6 +1,9 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -8,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -118,8 +123,32 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener {
             Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
                     .navigate(R.id.action_myNotesFragment_to_addNoteFragment);
         } else if (view.getId() == R.id.fab_add_category) {
-            //todo handle on category add click
+            showPopup();
         }
+    }
+
+    private void showPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        LayoutInflater inflater = (requireActivity()).getLayoutInflater();
+        builder.setTitle(R.string.add_category_title);
+        builder.setCancelable(false);
+        View view = inflater.inflate(R.layout.add_category_dialog_view, null);
+        EditText etCategory = view.findViewById(R.id.et_category);
+        builder.setView(view)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (TextUtils.isEmpty(etCategory.getText())) {
+                            Toast.makeText(requireActivity(),
+                                    getString(R.string.category_name_empty_error),
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            viewModel.addCategoryToRepo(etCategory.getText().toString());
+                        }
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 
     @Override

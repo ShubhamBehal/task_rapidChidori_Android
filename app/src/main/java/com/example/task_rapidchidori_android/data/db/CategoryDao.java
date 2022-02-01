@@ -15,6 +15,9 @@ public interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Category> categories);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(Category category);
+
     @Query("SELECT * FROM  categories")
     List<Category> getAllCategories();
 }
