@@ -1,6 +1,11 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
+import static com.example.task_rapidchidori_android.helper.Constants.DATE_TIME_FORMAT;
+
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -8,12 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
+import android.widget.DatePicker;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -22,7 +30,9 @@ import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.ui.viewmodels.AddNoteViewModel;
 import com.example.task_rapidchidori_android.ui.viewmodels.factory.AddNoteViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class AddNoteFragment extends Fragment implements View.OnClickListener {
@@ -36,6 +46,9 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
     private Animation animBackward;
     private Spinner spCategories;
     private AddNoteViewModel viewModel;
+    private TextView tvDueDate;
+    private Calendar date;
+    private TextInputEditText tietDesc;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,6 +77,8 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
         fabImage = view.findViewById(R.id.fab_add_image);
         fabAudio = view.findViewById(R.id.fab_add_audio);
         spCategories = view.findViewById(R.id.sp_categories);
+        tvDueDate = view.findViewById(R.id.tv_due_date);
+        tietDesc = view.findViewById(R.id.tiet_desc);
     }
 
 
@@ -83,8 +98,16 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
         fabAdd.setOnClickListener(this);
         fabImage.setOnClickListener(this);
         fabAudio.setOnClickListener(this);
+        tvDueDate.setOnClickListener(this);
 
         viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::setUpSpinner);
+
+        tietDesc.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                tietDesc.clearFocus();
+            }
+            return false;
+        });
     }
 
     private void setUpSpinner(List<CategoryInfo> categoryInfos) {
@@ -108,7 +131,32 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
             //todo handle on add image click
         } else if (view.getId() == R.id.fab_add_audio) {
             //todo handle on add audio click
+        } else if (view.getId() == R.id.tv_due_date) {
+            openDateTimePicker();
         }
+    }
+
+    private void openDateTimePicker() {
+        final Calendar currentDate = Calendar.getInstance();
+        date = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                date.set(year, monthOfYear, dayOfMonth);
+                new TimePickerDialog(AddNoteFragment.this.requireActivity(), (view1, hourOfDay, minute) -> {
+                    date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    date.set(Calendar.MINUTE, minute);
+                    AddNoteFragment.this.onDateTimeSelected();
+                }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
+            }
+        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE));
+        datePickerDialog.getDatePicker().setMinDate(currentDate.getTimeInMillis());
+        datePickerDialog.show();
+    }
+
+    private void onDateTimeSelected() {
+        tvDueDate.setTextColor(ContextCompat.getColor(requireActivity(), R.color.black));
+        tvDueDate.setText(DateFormat.format(DATE_TIME_FORMAT, date.getTime()));
     }
 
     public void animateFAB() {
