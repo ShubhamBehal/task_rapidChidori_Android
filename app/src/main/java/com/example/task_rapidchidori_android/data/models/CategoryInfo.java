@@ -5,14 +5,14 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "categories")
-public class Category {
+public class CategoryInfo {
     @PrimaryKey
     @NonNull
     public String category;
 
     public boolean isSelected;
 
-    public Category(@NonNull String category) {
+    public CategoryInfo(@NonNull String category) {
         this.category = category;
     }
 }

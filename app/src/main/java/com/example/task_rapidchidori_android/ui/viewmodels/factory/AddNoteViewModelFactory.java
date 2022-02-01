@@ -6,19 +6,20 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.task_rapidchidori_android.ui.viewmodels.AddNoteViewModel;
 import com.example.task_rapidchidori_android.ui.viewmodels.MyNotesViewModel;
 
-public class MyNotesViewModelFactory implements ViewModelProvider.Factory {
+public class AddNoteViewModelFactory implements ViewModelProvider.Factory {
     private final Application mApplication;
 
 
-    public MyNotesViewModelFactory(Application application) {
+    public AddNoteViewModelFactory(Application application) {
         mApplication = application;
     }
 
 
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new MyNotesViewModel(mApplication);
+        return (T) new AddNoteViewModel(mApplication);
     }
 }

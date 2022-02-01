@@ -18,4 +18,5 @@
     <string name="add_category_title">Add a Category</string>
     <string name="ok">OK</string>
     <string name="category_name_empty_error">The category name should not be empty</string>
+    <string name="category_added_success_msg">Category added to the list successfully</string>
 </resources>

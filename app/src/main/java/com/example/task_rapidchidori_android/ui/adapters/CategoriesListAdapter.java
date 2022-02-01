@@ -11,17 +11,17 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
-import com.example.task_rapidchidori_android.data.models.Category;
+import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.ui.interfaces.OnCategorySelect;
 
 import java.util.List;
 
 public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAdapter.ViewHolder> {
 
-    private final List<Category> categories;
+    private final List<CategoryInfo> categories;
     private final OnCategorySelect listener;
 
-    public CategoriesListAdapter(List<Category> categories, OnCategorySelect listener) {
+    public CategoriesListAdapter(List<CategoryInfo> categories, OnCategorySelect listener) {
         this.categories = categories;
         this.listener = listener;
     }
@@ -58,7 +58,7 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
         return categories.size();
     }
 
-    public void setData(List<Category> categories) {
+    public void setData(List<CategoryInfo> categories) {
         this.categories.clear();
         this.categories.addAll(categories);
         notifyItemRangeChanged(0, categories.size());

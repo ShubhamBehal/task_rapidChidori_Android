@@ -8,17 +8,14 @@ import androidx.lifecycle.ViewModel;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.data.repository.CategoryRepo;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MyNotesViewModel extends ViewModel {
+public class AddNoteViewModel extends ViewModel {
     private final CategoryRepo repo;
 
-    public MyNotesViewModel(Application mApplication) {
+    public AddNoteViewModel(Application mApplication) {
         repo = CategoryRepo.getInstance(mApplication.getApplicationContext());
-    }
-
-    public void addDefaultCategories() {
-        repo.addDefaultCategories();
     }
 
     public void getCategoriesFromRepo() {
@@ -29,7 +26,11 @@ public class MyNotesViewModel extends ViewModel {
         return repo.getCategoryLiveData();
     }
 
-    public void addCategoryToRepo(String category) {
-        repo.addCategoryToRepo(category);
+    public List<String> getCategoryNameList(List<CategoryInfo> categoryInfos) {
+        List<String> categoryNames = new ArrayList<>();
+        for (CategoryInfo categoryInfo : categoryInfos) {
+            categoryNames.add(categoryInfo.category);
+        }
+        return categoryNames;
     }
 }

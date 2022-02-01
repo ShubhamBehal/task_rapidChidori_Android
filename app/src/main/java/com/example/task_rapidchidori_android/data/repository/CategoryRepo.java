@@ -4,8 +4,8 @@ import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.task_rapidchidori_android.data.db.CategoryDB;
-import com.example.task_rapidchidori_android.data.models.Category;
+import com.example.task_rapidchidori_android.data.db.NotesDB;
+import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,17 +13,17 @@ import java.util.List;
 public class CategoryRepo {
 
     private static CategoryRepo instance;
-    private final CategoryDB database;
-    private final MutableLiveData<List<Category>> categoryLiveData = new MutableLiveData<>();
+    private final NotesDB database;
+    private final MutableLiveData<List<CategoryInfo>> categoryLiveData = new MutableLiveData<>();
 
-    private CategoryRepo(CategoryDB database) {
+    private CategoryRepo(NotesDB database) {
         this.database = database;
     }
 
     public static CategoryRepo getInstance(Context context) {
         if (instance == null) {
             instance = new CategoryRepo(
-                    CategoryDB.getInstance(context));
+                    NotesDB.getInstance(context));
         }
         return instance;
     }
@@ -33,13 +33,13 @@ public class CategoryRepo {
             @Override
             public void run() {
                 super.run();
-                List<Category> categories = new ArrayList<>();
-                Category work = new Category("Work");
+                List<CategoryInfo> categories = new ArrayList<>();
+                CategoryInfo work = new CategoryInfo("Work");
                 work.isSelected = true;
                 categories.add(work);
-                categories.add(new Category("School"));
-                categories.add(new Category("Shopping"));
-                categories.add(new Category("Groceries"));
+                categories.add(new CategoryInfo("School"));
+                categories.add(new CategoryInfo("Shopping"));
+                categories.add(new CategoryInfo("Groceries"));
                 database.categoryDao().insertAll(categories);
 
                 categoryLiveData.postValue(database.categoryDao().getAllCategories());
@@ -59,7 +59,7 @@ public class CategoryRepo {
         thread.start();
     }
 
-    public MutableLiveData<List<Category>> getCategoryLiveData() {
+    public MutableLiveData<List<CategoryInfo>> getCategoryLiveData() {
         return categoryLiveData;
     }
 
@@ -68,7 +68,7 @@ public class CategoryRepo {
             @Override
             public void run() {
                 super.run();
-                database.categoryDao().insert(new Category(category));
+                database.categoryDao().insert(new CategoryInfo(category));
 
                 categoryLiveData.postValue(database.categoryDao().getAllCategories());
             }

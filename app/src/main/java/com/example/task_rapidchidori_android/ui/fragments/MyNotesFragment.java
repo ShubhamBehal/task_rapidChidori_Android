@@ -1,7 +1,6 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -23,7 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
-import com.example.task_rapidchidori_android.data.models.Category;
+import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.helper.SharedPrefsUtil;
 import com.example.task_rapidchidori_android.ui.adapters.CategoriesListAdapter;
 import com.example.task_rapidchidori_android.ui.interfaces.OnCategorySelect;
@@ -48,7 +47,7 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
     private MyNotesViewModel viewModel;
     private RecyclerView rvCategories;
     private CategoriesListAdapter categoriesListAdapter;
-    private List<Category> categories;
+    private List<CategoryInfo> categories;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,7 +112,7 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
         viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::showCategoryList);
     }
 
-    private void showCategoryList(List<Category> categories) {
+    private void showCategoryList(List<CategoryInfo> categories) {
         this.categories = categories;
         categoriesListAdapter.setData(categories);
     }
@@ -138,16 +137,16 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
         View view = inflater.inflate(R.layout.add_category_dialog_view, null);
         EditText etCategory = view.findViewById(R.id.et_category);
         builder.setView(view)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (TextUtils.isEmpty(etCategory.getText())) {
-                            Toast.makeText(requireActivity(),
-                                    getString(R.string.category_name_empty_error),
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            viewModel.addCategoryToRepo(etCategory.getText().toString());
-                        }
+                .setPositiveButton(R.string.ok, (dialog, id) -> {
+                    if (TextUtils.isEmpty(etCategory.getText())) {
+                        Toast.makeText(requireActivity(),
+                                getString(R.string.category_name_empty_error),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        viewModel.addCategoryToRepo(etCategory.getText().toString());
+                        Toast.makeText(requireActivity(),
+                                getString(R.string.category_added_success_msg),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
         builder.create();
@@ -186,7 +185,7 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
 
     @Override
     public void onCategorySelect(String category) {
-        for (Category c : categories) {
+        for (CategoryInfo c : categories) {
             c.isSelected = c.category.equalsIgnoreCase(category);
         }
         categoriesListAdapter.setData(categories);

@@ -5,7 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.example.task_rapidchidori_android.data.models.Category;
+import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import java.util.List;
 public interface CategoryDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<Category> categories);
+    void insertAll(List<CategoryInfo> categories);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(Category category);
+    void insert(CategoryInfo categoryInfo);
 
     @Query("SELECT * FROM  categories")
-    List<Category> getAllCategories();
+    List<CategoryInfo> getAllCategories();
 }
