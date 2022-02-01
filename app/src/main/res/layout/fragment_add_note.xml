@@ -166,5 +166,51 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_add_subtask" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_audio"
+            android:visibility="invisible"
+            app:backgroundTint="@color/color_fab_2"
+            app:layout_constraintBottom_toTopOf="@id/fab_add_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/white"
+            app:fabSize="mini"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_image"
+            android:visibility="invisible"
+            app:fabSize="mini"
+            app:backgroundTint="@color/color_fab_1"
+            app:layout_constraintBottom_toTopOf="@id/fab_add"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/white"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:importantForAccessibility="no"
+            app:fabSize="mini"
+            android:src="@drawable/ic_add"
+            app:backgroundTint="@color/color_accent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/white" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

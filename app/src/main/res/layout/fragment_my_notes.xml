@@ -40,14 +40,53 @@
         tools:listitem="@layout/notes_child_view" />
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_add_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:importantForAccessibility="no"
+        android:text="Add a Category"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        app:backgroundTint="@color/color_fab_2"
+        app:icon="@drawable/ic_add_category"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/fab_add_note"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_add_note"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_10"
         android:importantForAccessibility="no"
+        android:text="   Add a Note   "
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:visibility="invisible"
+        app:backgroundTint="@color/color_fab_1"
+        app:icon="@drawable/ic_add_note"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/fab_add"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="HardcodedText" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_add"
+        app:backgroundTint="@color/color_accent"
+        app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="@color/white" />
