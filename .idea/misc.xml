@@ -7,7 +7,12 @@
         <entry key="app/src/main/res/drawable-v24/grey_border_background.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/drawable/category_backgroud.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/drawable/ic_add.xml" value="0.26197916666666665" />
+        <entry key="app/src/main/res/drawable/ic_baseline_date_range_24.xml" value="0.168" />
+        <entry key="app/src/main/res/drawable/ic_baseline_sort_24.xml" value="0.168" />
+        <entry key="app/src/main/res/drawable/ic_baseline_sort_by_alpha_24.xml" value="0.168" />
         <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.26197916666666665" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.168" />
+        <entry key="app/src/main/res/drawable/ic_sort.xml" value="0.168" />
         <entry key="app/src/main/res/drawable/image_gradient.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/drawable/search_background.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.23177083333333334" />
