@@ -1,5 +1,7 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
+import static com.example.task_rapidchidori_android.helper.Constants.DEFAULT_CATEGORY;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -169,7 +171,7 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
             m.setOptionalIconsVisible(true);
         }
         super.onCreateOptionsMenu(menu, inflater);
-        if(menu instanceof MenuBuilder){
+        if (menu instanceof MenuBuilder) {
             MenuBuilder m = (MenuBuilder) menu;
             m.setOptionalIconsVisible(true);
         }
@@ -206,6 +208,15 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
         }
         categoriesListAdapter.setData(categories);
         viewModel.addCategoryToRepo(categories);
+    }
+
+    @Override
+    public void onDetach() {
+        for (CategoryInfo c : categories) {
+            c.isSelected = c.category.equalsIgnoreCase(DEFAULT_CATEGORY);
+        }
+        viewModel.addCategoryToRepo(categories);
+        super.onDetach();
     }
 }
 
