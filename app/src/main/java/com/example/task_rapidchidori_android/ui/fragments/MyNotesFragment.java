@@ -1,5 +1,6 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -97,7 +99,10 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
         animForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
         animBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward);
 
-        categoriesListAdapter = new CategoriesListAdapter(new ArrayList<>(), this);
+        if (categories == null) {
+            categories = new ArrayList<>();
+        }
+        categoriesListAdapter = new CategoriesListAdapter(categories, this);
         rvCategories.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         rvCategories.setAdapter(categoriesListAdapter);
@@ -124,8 +129,10 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
         } else if (view.getId() == R.id.fab_add_note && getActivity() != null) {
             Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
                     .navigate(R.id.action_myNotesFragment_to_addNoteFragment);
+            fabAdd.callOnClick();
         } else if (view.getId() == R.id.fab_add_category) {
             showPopup();
+            fabAdd.callOnClick();
         }
     }
 
@@ -153,9 +160,14 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
         builder.show();
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
+        if (menu instanceof MenuBuilder) {
+            MenuBuilder m = (MenuBuilder) menu;
+            m.setOptionalIconsVisible(true);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -189,6 +201,7 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
             c.isSelected = c.category.equalsIgnoreCase(category);
         }
         categoriesListAdapter.setData(categories);
+        viewModel.addCategoryToRepo(categories);
     }
 }
 

@@ -28,18 +28,12 @@ public class CategoryRepo {
         return instance;
     }
 
-    public void addDefaultCategories() {
+    public void addCategoriesToRepo(List<CategoryInfo> categories) {
         Thread thread = new Thread() {
             @Override
             public void run() {
                 super.run();
-                List<CategoryInfo> categories = new ArrayList<>();
-                CategoryInfo work = new CategoryInfo("Work");
-                work.isSelected = true;
-                categories.add(work);
-                categories.add(new CategoryInfo("School"));
-                categories.add(new CategoryInfo("Shopping"));
-                categories.add(new CategoryInfo("Groceries"));
+
                 database.categoryDao().insertAll(categories);
 
                 categoryLiveData.postValue(database.categoryDao().getAllCategories());
@@ -47,6 +41,7 @@ public class CategoryRepo {
         };
         thread.start();
     }
+
 
     public void getAllCategories() {
         Thread thread = new Thread() {
@@ -61,18 +56,5 @@ public class CategoryRepo {
 
     public MutableLiveData<List<CategoryInfo>> getCategoryLiveData() {
         return categoryLiveData;
-    }
-
-    public void addCategoryToRepo(String category) {
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                database.categoryDao().insert(new CategoryInfo(category));
-
-                categoryLiveData.postValue(database.categoryDao().getAllCategories());
-            }
-        };
-        thread.start();
     }
 }
