@@ -1,4 +1,4 @@
-package com.example.task_rapidchidori_android.ui.viewmodels.factory;
+package com.example.task_rapidchidori_android.ui.viewmodelfactories;
 
 import android.app.Application;
 

@@ -26,8 +26,8 @@ import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.helper.SharedPrefsUtil;
 import com.example.task_rapidchidori_android.ui.adapters.CategoriesListAdapter;
 import com.example.task_rapidchidori_android.ui.interfaces.OnCategorySelect;
+import com.example.task_rapidchidori_android.ui.viewmodelfactories.MyNotesViewModelFactory;
 import com.example.task_rapidchidori_android.ui.viewmodels.MyNotesViewModel;
-import com.example.task_rapidchidori_android.ui.viewmodels.factory.MyNotesViewModelFactory;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

@@ -27,8 +27,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
+import com.example.task_rapidchidori_android.ui.viewmodelfactories.AddNoteViewModelFactory;
 import com.example.task_rapidchidori_android.ui.viewmodels.AddNoteViewModel;
-import com.example.task_rapidchidori_android.ui.viewmodels.factory.AddNoteViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
