@@ -11,7 +11,7 @@
         android:theme="@style/Theme.Task_rapidChidori_Android">
         <activity
             android:name=".ui.activities.NotesActivity"
-            android:exported="true" >
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,7 +20,8 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".ui.activities.SplashscreenActivity"
+        <activity
+            android:name=".ui.activities.SplashscreenActivity"
             android:exported="true">
 
         </activity>

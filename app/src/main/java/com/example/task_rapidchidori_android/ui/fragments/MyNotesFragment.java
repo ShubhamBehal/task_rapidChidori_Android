@@ -12,11 +12,22 @@ import android.view.animation.AnimationUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
+import com.example.task_rapidchidori_android.data.models.Category;
+import com.example.task_rapidchidori_android.helper.SharedPrefsUtil;
+import com.example.task_rapidchidori_android.ui.adapters.CategoriesListAdapter;
+import com.example.task_rapidchidori_android.ui.viewmodels.MyNotesViewModel;
+import com.example.task_rapidchidori_android.ui.viewmodels.factory.MyNotesViewModelFactory;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyNotesFragment extends Fragment implements View.OnClickListener {
 
@@ -28,6 +39,9 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener {
     private Animation animClose;
     private Animation animForward;
     private Animation animBackward;
+    private MyNotesViewModel viewModel;
+    private RecyclerView rvCategories;
+    private CategoriesListAdapter categoriesListAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,27 +63,51 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener {
         initViews(view);
         configViews();
         setUpListeners();
+
+        //adding default categories only the first time app is launched
+        if (!SharedPrefsUtil.getInstance().isAlreadyLaunched(requireActivity())) {
+            viewModel.addDefaultCategories();
+        }
+
+        //getting all categories name saved in room db
+        viewModel.getCategoriesFromRepo();
+
     }
 
     private void initViews(View view) {
         fabAdd = view.findViewById(R.id.fab_add);
         fabAddNotes = view.findViewById(R.id.fab_add_note);
         fabAddCategories = view.findViewById(R.id.fab_add_category);
+        rvCategories = view.findViewById(R.id.rv_categories);
     }
 
-
     private void configViews() {
+        viewModel = new ViewModelProvider(this,
+                new MyNotesViewModelFactory(requireActivity().getApplication()))
+                .get(MyNotesViewModel.class);
+
         animOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         animClose = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
         animForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
         animBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward);
-    }
 
+        categoriesListAdapter = new CategoriesListAdapter(new ArrayList<>());
+        rvCategories.setLayoutManager(new LinearLayoutManager(requireActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
+        rvCategories.setAdapter(categoriesListAdapter);
+    }
 
     private void setUpListeners() {
         fabAdd.setOnClickListener(this);
         fabAddNotes.setOnClickListener(this);
         fabAddCategories.setOnClickListener(this);
+
+        //live data observer for categories name
+        viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::showCategoryList);
+    }
+
+    private void showCategoryList(List<Category> categories) {
+        categoriesListAdapter.setData(categories);
     }
 
     @Override
@@ -107,4 +145,11 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener {
             isFabOpen = true;
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPrefsUtil.getInstance().setAlreadyLaunched(requireActivity(), true);
+    }
 }
+

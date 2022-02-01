@@ -12,7 +12,6 @@ import android.view.animation.AnimationUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import com.example.task_rapidchidori_android.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -79,7 +78,7 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if (view.getId() == R.id.fab_add) {
             animateFAB();
-        } else if (view.getId() == R.id.fab_add_image ) {
+        } else if (view.getId() == R.id.fab_add_image) {
             //todo handle on add image click
         } else if (view.getId() == R.id.fab_add_audio) {
             //todo handle on add audio click

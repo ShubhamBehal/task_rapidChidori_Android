@@ -36,6 +36,7 @@ dependencies {
     def nav_version = "2.4.0"
     def room_version = "2.4.1"
     def splash_version = "1.0.0-beta01"
+    def hilt_version = "2.38.1"
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
@@ -51,5 +52,6 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
+    //android Splash API
     implementation "androidx.core:core-splashscreen:$splash_version"
 }
