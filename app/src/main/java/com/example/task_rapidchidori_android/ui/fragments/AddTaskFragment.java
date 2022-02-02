@@ -4,6 +4,7 @@ import static com.example.task_rapidchidori_android.helper.Constants.DATE_TIME_F
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ClipData;
@@ -256,7 +257,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         } else if (view.getId() == R.id.tv_due_date) {
             openDateTimePicker();
         } else if (view.getId() == R.id.fab_add_audio) {
-            //todo hanlde on audio add click
+            //todo handle on audio add click
         }
     }
 
@@ -379,6 +380,20 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
 
     @Override
     public void onImageDeleteClick(int position) {
+
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(R.string.delete_task_head)
+                .setMessage(R.string.delete_task_desc)
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    removeImage(position);
+                })
+                .setNegativeButton(R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+    }
+
+    private void removeImage(int position) {
         bitmaps.remove(position);
         imageSources.remove(position);
         imagesAdapter.setData(bitmaps);
