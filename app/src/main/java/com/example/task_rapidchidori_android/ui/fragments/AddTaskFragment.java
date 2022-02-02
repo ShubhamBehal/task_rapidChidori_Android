@@ -2,8 +2,16 @@ package com.example.task_rapidchidori_android.ui.fragments;
 
 import static com.example.task_rapidchidori_android.helper.Constants.DATE_TIME_FORMAT;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ClipData;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -17,26 +25,34 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
+import com.example.task_rapidchidori_android.data.typeconverters.ImageBitmapString;
+import com.example.task_rapidchidori_android.ui.adapters.ImagesAdapter;
 import com.example.task_rapidchidori_android.ui.viewmodelfactories.AddTaskViewModelFactory;
 import com.example.task_rapidchidori_android.ui.viewmodels.AddTaskViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -56,11 +72,83 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
     private Calendar date;
     private TextInputEditText tietTitle;
     private TextInputEditText tietDesc;
+    private ActivityResultLauncher<String> cameraPermissionLauncher;
+    private ActivityResultLauncher<Intent> cameraLauncher;
+    private ActivityResultLauncher<Intent> galleryLauncher;
+    private final ArrayList<Bitmap> bitmaps = new ArrayList<>();
+    private final ArrayList<String> imageSources = new ArrayList<>();
+    private RecyclerView rvImages;
+    private ImagesAdapter imagesAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        cameraLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+//                        Bitmap photo = null;
+//                        if (result.getData() != null) {
+//                            photo = (Bitmap) result.getData().getExtras().get("data");
+//                        }
+                    }
+                });
+
+        galleryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        handleOnGalleryPhotoSelect(result.getData());
+                    }
+                });
+
+
+        cameraPermissionLauncher =
+                registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+                        isGranted -> {
+                            if (isGranted) {
+                                handleOnCameraClick();
+                            } else {
+                                Toast.makeText(requireActivity(),
+                                        getString(R.string.permission_denied), Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        });
+    }
+
+    private void handleOnGalleryPhotoSelect(Intent data) {
+        ClipData clipData = data.getClipData();
+
+        if (clipData != null) {
+            for (int i = 0; i < clipData.getItemCount(); i++) {
+                Uri imageUri = clipData.getItemAt(i).getUri();
+                try {
+                    InputStream is = requireActivity().getContentResolver()
+                            .openInputStream(imageUri);
+                    Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    bitmaps.add(bitmap);
+                    String imageSource = ImageBitmapString.BitMapToString(bitmap);
+                    imageSources.add(imageSource);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            Uri imageUri = data.getData();
+            try {
+                InputStream is = requireActivity().getContentResolver().openInputStream(imageUri);
+                Bitmap bitmap = BitmapFactory.decodeStream(is);
+                bitmaps.add(bitmap);
+                String imageSource = ImageBitmapString.BitMapToString(bitmap);
+                imageSources.add(imageSource);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        imagesAdapter.setData(bitmaps);
     }
 
     @Override
@@ -72,7 +160,6 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         initViews(view);
         configViews();
         viewModel.getCategoriesFromRepo();
@@ -87,6 +174,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
         tvDueDate = view.findViewById(R.id.tv_due_date);
         tietTitle = view.findViewById(R.id.tiet_title);
         tietDesc = view.findViewById(R.id.tiet_desc);
+        rvImages = view.findViewById(R.id.rv_images);
     }
 
 
@@ -99,6 +187,11 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
         animClose = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
         animForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
         animBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward);
+
+        imagesAdapter = new ImagesAdapter(bitmaps);
+        rvImages.setLayoutManager(new LinearLayoutManager(requireActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
+        rvImages.setAdapter(imagesAdapter);
     }
 
 
@@ -147,28 +240,55 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
         if (view.getId() == R.id.fab_add) {
             animateFAB();
         } else if (view.getId() == R.id.fab_add_image) {
-            //todo handle on add image click
+            handleOnGalleryClick();
         } else if (view.getId() == R.id.fab_add_audio) {
-            //todo handle on add audio click
+            handleOnCameraClick();
         } else if (view.getId() == R.id.tv_due_date) {
             openDateTimePicker();
         }
     }
 
+    private void handleOnGalleryClick() {
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        galleryIntent.setType("image/*");
+        galleryLauncher.launch(galleryIntent);
+    }
+
+    void handleOnCameraClick() {
+        if (hasCameraPermissions()) {
+            openCamera();
+        } else {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+        }
+    }
+
+    private void openCamera() {
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraLauncher.launch(cameraIntent);
+    }
+
+    private boolean hasCameraPermissions() {
+        return ContextCompat.checkSelfPermission(requireActivity(),
+                Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
     private void openDateTimePicker() {
         final Calendar currentDate = Calendar.getInstance();
         date = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                date.set(year, monthOfYear, dayOfMonth);
-                new TimePickerDialog(AddTaskFragment.this.requireActivity(), (view1, hourOfDay, minute) -> {
-                    date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    date.set(Calendar.MINUTE, minute);
-                    AddTaskFragment.this.onDateTimeSelected();
-                }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
-            }
-        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE));
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(),
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    date.set(year, monthOfYear, dayOfMonth);
+                    new TimePickerDialog(AddTaskFragment.this.requireActivity(),
+                            (view1, hourOfDay, minute) -> {
+                                date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                date.set(Calendar.MINUTE, minute);
+                                AddTaskFragment.this.onDateTimeSelected();
+                            }, currentDate.get(Calendar.HOUR_OF_DAY),
+                            currentDate.get(Calendar.MINUTE),
+                            false).show();
+                }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH),
+                currentDate.get(Calendar.DATE));
         datePickerDialog.getDatePicker().setMinDate(currentDate.getTimeInMillis());
         datePickerDialog.show();
     }
@@ -215,7 +335,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
                             DateFormat.format(DATE_TIME_FORMAT,
                                     Calendar.getInstance().getTimeInMillis()).toString()
                     );
-            viewModel.saveTaskToRepo(taskInfo);
+            viewModel.saveTaskToRepo(taskInfo, imageSources);
         }
     }
 
