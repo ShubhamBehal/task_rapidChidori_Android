@@ -6,24 +6,28 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
+import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.repository.CategoryRepo;
+import com.example.task_rapidchidori_android.data.repository.TaskRepo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddNoteViewModel extends ViewModel {
-    private final CategoryRepo repo;
+public class AddTaskViewModel extends ViewModel {
+    private final CategoryRepo categoryRepo;
+    private final TaskRepo taskRepo;
 
-    public AddNoteViewModel(Application mApplication) {
-        repo = CategoryRepo.getInstance(mApplication.getApplicationContext());
+    public AddTaskViewModel(Application mApplication) {
+        categoryRepo = CategoryRepo.getInstance(mApplication.getApplicationContext());
+        taskRepo = TaskRepo.getInstance(mApplication.getApplicationContext());
     }
 
     public void getCategoriesFromRepo() {
-        repo.getAllCategories();
+        categoryRepo.getAllCategories();
     }
 
     public MutableLiveData<List<CategoryInfo>> getCategoryLiveData() {
-        return repo.getCategoryLiveData();
+        return categoryRepo.getCategoryLiveData();
     }
 
     public List<String> getCategoryNameList(List<CategoryInfo> categoryInfos) {
@@ -32,5 +36,13 @@ public class AddNoteViewModel extends ViewModel {
             categoryNames.add(categoryInfo.category);
         }
         return categoryNames;
+    }
+
+    public void saveTaskToRepo(TaskInfo taskInfo) {
+        taskRepo.saveTaskToRepo(taskInfo);
+    }
+
+    public MutableLiveData<Boolean> getIsSaved() {
+        return taskRepo.getIsSaved();
     }
 }

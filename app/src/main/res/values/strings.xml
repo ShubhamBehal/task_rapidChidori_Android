@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Notes App</string>
+    <string name="app_name">Tasks App</string>
     <string name="title_hint">Title</string>
     <string name="title_description">Description</string>
-    <string name="my_notes_head">My Notes</string>
-    <string name="add_note_head">Add Note</string>
+    <string name="my_tasks_head">My Tasks</string>
+    <string name="add_task_head">Add Task</string>
     <string name="due_date_label">Select a due date</string>
     <string name="images_label">Images</string>
     <string name="play_audio">Play Audio</string>
@@ -19,4 +19,9 @@
     <string name="ok">OK</string>
     <string name="category_name_empty_error">The category name should not be empty</string>
     <string name="category_added_success_msg">Category added to the list successfully</string>
+    <string name="empty_title_error">Title cannot be empty</string>
+    <string name="empty_description_error">Description cannot be empty</string>
+    <string name="empty_due_date_error">Please select a due date</string>
+    <string name="task_save_success">Task saved successfully</string>
+    <string name="no_tasks_found">There are no tasks associated with selected Category!!!\n\nPlease add a task or try changing the category!!!</string>
 </resources>

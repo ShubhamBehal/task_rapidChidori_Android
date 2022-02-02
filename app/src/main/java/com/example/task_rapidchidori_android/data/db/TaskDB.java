@@ -10,13 +10,13 @@ import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 
 @Database(entities = {CategoryInfo.class, TaskInfo.class}, version = 1)
-public abstract class NotesDB extends RoomDatabase {
-    private static volatile NotesDB instance;
+public abstract class TaskDB extends RoomDatabase {
+    private static volatile TaskDB instance;
 
-    public static synchronized NotesDB getInstance(Context context) {
+    public static synchronized TaskDB getInstance(Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(),
-                    NotesDB.class, "notes_db")
+                    TaskDB.class, "task_db")
                     .fallbackToDestructiveMigration()
                     .build();
         }
@@ -24,4 +24,6 @@ public abstract class NotesDB extends RoomDatabase {
     }
 
     public abstract CategoryDao categoryDao();
+
+    public abstract TaskDao taskDao();
 }

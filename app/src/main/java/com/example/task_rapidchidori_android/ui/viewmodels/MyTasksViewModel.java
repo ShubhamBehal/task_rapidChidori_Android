@@ -6,16 +6,22 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
+import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.repository.CategoryRepo;
+import com.example.task_rapidchidori_android.data.repository.TaskRepo;
+import com.example.task_rapidchidori_android.helper.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyNotesViewModel extends ViewModel {
-    private final CategoryRepo repo;
+public class MyTasksViewModel extends ViewModel {
+    private final CategoryRepo categoryRepo;
+    private final TaskRepo taskRepo;
+    private SingleLiveEvent<String> demo = new SingleLiveEvent<>();
 
-    public MyNotesViewModel(Application mApplication) {
-        repo = CategoryRepo.getInstance(mApplication.getApplicationContext());
+    public MyTasksViewModel(Application mApplication) {
+        categoryRepo = CategoryRepo.getInstance(mApplication.getApplicationContext());
+        taskRepo = TaskRepo.getInstance(mApplication.getApplicationContext());
     }
 
     public void addDefaultCategories() {
@@ -26,24 +32,32 @@ public class MyNotesViewModel extends ViewModel {
         categories.add(new CategoryInfo("School"));
         categories.add(new CategoryInfo("Shopping"));
         categories.add(new CategoryInfo("Groceries"));
-        repo.addCategoriesToRepo(categories);
+        categoryRepo.addCategoriesToRepo(categories);
     }
 
     public void getCategoriesFromRepo() {
-        repo.getAllCategories();
+        categoryRepo.getAllCategories();
     }
 
     public MutableLiveData<List<CategoryInfo>> getCategoryLiveData() {
-        return repo.getCategoryLiveData();
+        return categoryRepo.getCategoryLiveData();
     }
 
     public void addCategoryToRepo(List<CategoryInfo> category) {
-        repo.addCategoriesToRepo(category);
+        categoryRepo.addCategoriesToRepo(category);
     }
 
     public void addCategoryToRepo(String category) {
         List<CategoryInfo> categories = new ArrayList<>();
         categories.add(new CategoryInfo(category));
-        repo.addCategoriesToRepo(categories);
+        categoryRepo.addCategoriesToRepo(categories);
+    }
+
+    public void getTasksFromRepo(String category) {
+        taskRepo.getTasksFromRepo(category);
+    }
+
+    public SingleLiveEvent<List<TaskInfo>> getTasksLiveData() {
+        return taskRepo.getTasksLiveData();
     }
 }

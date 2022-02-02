@@ -4,26 +4,25 @@ import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.task_rapidchidori_android.data.db.NotesDB;
+import com.example.task_rapidchidori_android.data.db.TaskDB;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryRepo {
 
     private static CategoryRepo instance;
-    private final NotesDB database;
+    private final TaskDB database;
     private final MutableLiveData<List<CategoryInfo>> categoryLiveData = new MutableLiveData<>();
 
-    private CategoryRepo(NotesDB database) {
+    private CategoryRepo(TaskDB database) {
         this.database = database;
     }
 
     public static CategoryRepo getInstance(Context context) {
         if (instance == null) {
             instance = new CategoryRepo(
-                    NotesDB.getInstance(context));
+                    TaskDB.getInstance(context));
         }
         return instance;
     }

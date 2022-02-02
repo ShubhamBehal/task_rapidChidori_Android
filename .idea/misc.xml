@@ -3,24 +3,34 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.27239583333333334" />
         <entry key="../../.gradle/caches/transforms-3/f8d734a7d44310d84014d6ed621ec293/transformed/appcompat-1.4.1/res/drawable/abc_btn_default_mtrl_shape.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/drawable-v24/grey_border_background.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/drawable/category_backgroud.xml" value="0.26197916666666665" />
+        <entry key="app/src/main/res/drawable/category_selected_backround.xml" value="0.173" />
+        <entry key="app/src/main/res/drawable/category_selector.xml" value="0.173" />
+        <entry key="app/src/main/res/drawable/category_unselected_background.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/ic_add.xml" value="0.26197916666666665" />
+        <entry key="app/src/main/res/drawable/ic_baseline_sort_by_alpha_24.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/drawable/image_gradient.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/drawable/search_background.xml" value="0.26197916666666665" />
+        <entry key="app/src/main/res/drawable/spinner_background.xml" value="0.173" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.23177083333333334" />
         <entry key="app/src/main/res/layout/activity_notes.xml" value="0.24094202898550723" />
         <entry key="app/src/main/res/layout/activity_splashscreen.xml" value="0.2341485507246377" />
+        <entry key="app/src/main/res/layout/activity_tasks.xml" value="0.5128968253968254" />
+        <entry key="app/src/main/res/layout/add_category_dialog_view.xml" value="0.2341485507246377" />
         <entry key="app/src/main/res/layout/categories_child_view.xml" value="0.23777173913043478" />
         <entry key="app/src/main/res/layout/fragment_add_note.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_my_notes.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_my_notes.xml" value="0.45" />
+        <entry key="app/src/main/res/layout/fragment_my_tasks.xml" value="0.5128968253968254" />
         <entry key="app/src/main/res/layout/notes_child_view.xml" value="0.335" />
         <entry key="app/src/main/res/layout/subtasks_child_view.xml" value="0.23777173913043478" />
         <entry key="app/src/main/res/layout/task_images_child_layout.xml" value="0.23777173913043478" />
+        <entry key="app/src/main/res/layout/tasks_child_view.xml" value="0.5128968253968254" />
         <entry key="app/src/main/res/menu/add_note_menu.xml" value="0.24583333333333332" />
-        <entry key="app/src/main/res/menu/main_menu.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/main_menu.xml" value="0.24583333333333332" />
       </map>
     </option>
   </component>

@@ -7,7 +7,7 @@
     android:fillViewport="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".ui.fragments.AddNoteFragment">
+    tools:context=".ui.fragments.AddTaskFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -66,7 +66,6 @@
             android:layout_height="?attr/dropdownListPreferredItemHeight"
             android:layout_marginTop="@dimen/dp_10"
             android:background="@drawable/grey_border_background"
-            android:dropDownWidth="@dimen/dp_300"
             android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
             android:paddingEnd="@dimen/dp_10"
             android:popupBackground="@android:color/white"

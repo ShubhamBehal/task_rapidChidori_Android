@@ -1,5 +1,6 @@
 package com.example.task_rapidchidori_android.ui.adapters;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,10 +59,11 @@ public class CategoriesListAdapter extends RecyclerView.Adapter<CategoriesListAd
         return categories.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(List<CategoryInfo> categories) {
         this.categories.clear();
         this.categories.addAll(categories);
-        notifyItemRangeChanged(0, categories.size());
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

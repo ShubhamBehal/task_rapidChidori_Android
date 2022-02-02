@@ -5,10 +5,12 @@ import static com.example.task_rapidchidori_android.helper.Constants.DATE_TIME_F
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -18,25 +20,28 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
-import com.example.task_rapidchidori_android.ui.viewmodelfactories.AddNoteViewModelFactory;
-import com.example.task_rapidchidori_android.ui.viewmodels.AddNoteViewModel;
+import com.example.task_rapidchidori_android.data.models.TaskInfo;
+import com.example.task_rapidchidori_android.ui.viewmodelfactories.AddTaskViewModelFactory;
+import com.example.task_rapidchidori_android.ui.viewmodels.AddTaskViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
-public class AddNoteFragment extends Fragment implements View.OnClickListener {
+public class AddTaskFragment extends Fragment implements View.OnClickListener {
     private FloatingActionButton fabAdd;
     private FloatingActionButton fabImage;
     private FloatingActionButton fabAudio;
@@ -46,9 +51,10 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
     private Animation animForward;
     private Animation animBackward;
     private Spinner spCategories;
-    private AddNoteViewModel viewModel;
+    private AddTaskViewModel viewModel;
     private TextView tvDueDate;
     private Calendar date;
+    private TextInputEditText tietTitle;
     private TextInputEditText tietDesc;
 
     @Override
@@ -60,7 +66,7 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_add_note, container, false);
+        return inflater.inflate(R.layout.fragment_add_task, container, false);
     }
 
     @Override
@@ -79,14 +85,15 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
         fabAudio = view.findViewById(R.id.fab_add_audio);
         spCategories = view.findViewById(R.id.sp_categories);
         tvDueDate = view.findViewById(R.id.tv_due_date);
+        tietTitle = view.findViewById(R.id.tiet_title);
         tietDesc = view.findViewById(R.id.tiet_desc);
     }
 
 
     private void configViews() {
         viewModel = new ViewModelProvider(this,
-                new AddNoteViewModelFactory(requireActivity().getApplication()))
-                .get(AddNoteViewModel.class);
+                new AddTaskViewModelFactory(requireActivity().getApplication()))
+                .get(AddTaskViewModel.class);
 
         animOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         animClose = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
@@ -109,6 +116,15 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
             }
             return false;
         });
+
+        viewModel.getIsSaved().observe(getViewLifecycleOwner(), isSaved -> {
+            if (isSaved) {
+                Toast.makeText(requireActivity(), getString(R.string.task_save_success),
+                        Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                        .navigateUp();
+            }
+        });
     }
 
     private void setUpSpinner(List<CategoryInfo> categoryInfos) {
@@ -120,7 +136,7 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.add_note_menu, menu);
+        inflater.inflate(R.menu.add_task_menu, menu);
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -145,10 +161,10 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 date.set(year, monthOfYear, dayOfMonth);
-                new TimePickerDialog(AddNoteFragment.this.requireActivity(), (view1, hourOfDay, minute) -> {
+                new TimePickerDialog(AddTaskFragment.this.requireActivity(), (view1, hourOfDay, minute) -> {
                     date.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     date.set(Calendar.MINUTE, minute);
-                    AddNoteFragment.this.onDateTimeSelected();
+                    AddTaskFragment.this.onDateTimeSelected();
                 }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
             }
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE));
@@ -177,5 +193,50 @@ public class AddNoteFragment extends Fragment implements View.OnClickListener {
             fabAudio.setClickable(true);
             isFabOpen = true;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.save_task) {
+            handleTaskSaveClick();
+            return false;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void handleTaskSaveClick() {
+        if (isInputValid()) {
+            TaskInfo taskInfo =
+                    new TaskInfo(Objects.requireNonNull(tietTitle.getText()).toString(),
+                            Objects.requireNonNull(tietDesc.getText()).toString(),
+                            spCategories.getSelectedItem().toString(),
+                            tvDueDate.getText().toString(),
+                            DateFormat.format(DATE_TIME_FORMAT,
+                                    Calendar.getInstance().getTimeInMillis()).toString()
+                    );
+            viewModel.saveTaskToRepo(taskInfo);
+        }
+    }
+
+    private boolean isInputValid() {
+        if (TextUtils.isEmpty(Objects.requireNonNull(tietTitle.getText()).toString())) {
+            Toast.makeText(requireActivity(), getString(R.string.empty_title_error),
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
+        if (TextUtils.isEmpty(Objects.requireNonNull(tietDesc.getText()).toString())) {
+            Toast.makeText(requireActivity(), getString(R.string.empty_description_error),
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
+        if (tvDueDate.getText().toString().equalsIgnoreCase(getString(R.string.due_date_label))) {
+            Toast.makeText(requireActivity(), getString(R.string.empty_due_date_error),
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return false;
+        }
+        return true;
     }
 }

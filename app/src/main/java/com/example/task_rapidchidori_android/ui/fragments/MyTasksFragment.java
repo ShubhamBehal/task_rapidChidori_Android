@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,31 +28,38 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
+import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.helper.SharedPrefsUtil;
 import com.example.task_rapidchidori_android.ui.adapters.CategoriesListAdapter;
+import com.example.task_rapidchidori_android.ui.adapters.TaskListAdapter;
 import com.example.task_rapidchidori_android.ui.interfaces.OnCategorySelect;
-import com.example.task_rapidchidori_android.ui.viewmodelfactories.MyNotesViewModelFactory;
-import com.example.task_rapidchidori_android.ui.viewmodels.MyNotesViewModel;
+import com.example.task_rapidchidori_android.ui.viewmodelfactories.MyTasksViewModelFactory;
+import com.example.task_rapidchidori_android.ui.viewmodels.MyTasksViewModel;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyNotesFragment extends Fragment implements View.OnClickListener, OnCategorySelect {
+public class MyTasksFragment extends Fragment implements View.OnClickListener, OnCategorySelect {
 
     private FloatingActionButton fabAdd;
-    private ExtendedFloatingActionButton fabAddNotes;
+    private ExtendedFloatingActionButton fabAddTask;
     private ExtendedFloatingActionButton fabAddCategories;
     private boolean isFabOpen;
     private Animation animOpen;
     private Animation animClose;
     private Animation animForward;
     private Animation animBackward;
-    private MyNotesViewModel viewModel;
+    private MyTasksViewModel viewModel;
     private RecyclerView rvCategories;
+    private RecyclerView rvTasks;
     private CategoriesListAdapter categoriesListAdapter;
+    private TaskListAdapter taskListAdapter;
     private List<CategoryInfo> categories;
+    private List<TaskInfo> tasks;
+    private String selectedCategory = DEFAULT_CATEGORY;
+    private TextView tvNoTasks;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +71,7 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_my_notes, container, false);
+        return inflater.inflate(R.layout.fragment_my_tasks, container, false);
     }
 
     @Override
@@ -82,25 +90,48 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
         //getting all categories name saved in room db
         viewModel.getCategoriesFromRepo();
 
+        //getting all saved tasks from repository of a particular repository
+        for (CategoryInfo category : categories) {
+            if (category.isSelected) {
+                selectedCategory = category.category;
+            }
+        }
+        viewModel.getTasksFromRepo(selectedCategory);
     }
 
     private void initViews(View view) {
         fabAdd = view.findViewById(R.id.fab_add);
-        fabAddNotes = view.findViewById(R.id.fab_add_note);
+        fabAddTask = view.findViewById(R.id.fab_add_task);
         fabAddCategories = view.findViewById(R.id.fab_add_category);
         rvCategories = view.findViewById(R.id.rv_categories);
+        rvTasks = view.findViewById(R.id.rv_tasks);
+        tvNoTasks = view.findViewById(R.id.tv_no_tasks);
     }
 
     private void configViews() {
         viewModel = new ViewModelProvider(this,
-                new MyNotesViewModelFactory(requireActivity().getApplication()))
-                .get(MyNotesViewModel.class);
+                new MyTasksViewModelFactory(requireActivity().getApplication()))
+                .get(MyTasksViewModel.class);
 
         animOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         animClose = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
         animForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
         animBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward);
 
+        setUpCategoriesAdapter();
+        setUpTasksAdapter();
+    }
+
+    private void setUpTasksAdapter() {
+        if (tasks == null) {
+            tasks = new ArrayList<>();
+        }
+        taskListAdapter = new TaskListAdapter(tasks);
+        rvTasks.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        rvTasks.setAdapter(taskListAdapter);
+    }
+
+    private void setUpCategoriesAdapter() {
         if (categories == null) {
             categories = new ArrayList<>();
         }
@@ -112,11 +143,30 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
 
     private void setUpListeners() {
         fabAdd.setOnClickListener(this);
-        fabAddNotes.setOnClickListener(this);
+        fabAddTask.setOnClickListener(this);
         fabAddCategories.setOnClickListener(this);
 
         //live data observer for categories name
         viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::showCategoryList);
+
+        //live data observer for all tasks in a category
+        viewModel.getTasksLiveData().observe(getViewLifecycleOwner(), this::showHideTaskList);
+    }
+
+    private void showHideTaskList(List<TaskInfo> taskInfos) {
+        if (taskInfos.isEmpty()) {
+            tvNoTasks.setVisibility(View.VISIBLE);
+            rvTasks.setVisibility(View.GONE);
+        } else {
+            tvNoTasks.setVisibility(View.GONE);
+            rvTasks.setVisibility(View.VISIBLE);
+            showTaskList(taskInfos);
+        }
+    }
+
+    private void showTaskList(List<TaskInfo> tasks) {
+        this.tasks = tasks;
+        taskListAdapter.setData(tasks);
     }
 
     private void showCategoryList(List<CategoryInfo> categories) {
@@ -128,9 +178,9 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
     public void onClick(View view) {
         if (view.getId() == R.id.fab_add) {
             animateFAB();
-        } else if (view.getId() == R.id.fab_add_note && getActivity() != null) {
+        } else if (view.getId() == R.id.fab_add_task && getActivity() != null) {
             Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
-                    .navigate(R.id.action_myNotesFragment_to_addNoteFragment);
+                    .navigate(R.id.action_myTasksFragment_to_addTaskFragment);
             fabAdd.callOnClick();
         } else if (view.getId() == R.id.fab_add_category) {
             showPopup();
@@ -180,16 +230,16 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
     public void animateFAB() {
         if (isFabOpen) {
             fabAdd.startAnimation(animBackward);
-            fabAddNotes.startAnimation(animClose);
+            fabAddTask.startAnimation(animClose);
             fabAddCategories.startAnimation(animClose);
-            fabAddNotes.setClickable(false);
+            fabAddTask.setClickable(false);
             fabAddCategories.setClickable(false);
             isFabOpen = false;
         } else {
             fabAdd.startAnimation(animForward);
-            fabAddNotes.startAnimation(animOpen);
+            fabAddTask.startAnimation(animOpen);
             fabAddCategories.startAnimation(animOpen);
-            fabAddNotes.setClickable(true);
+            fabAddTask.setClickable(true);
             fabAddCategories.setClickable(true);
             isFabOpen = true;
         }
@@ -208,6 +258,9 @@ public class MyNotesFragment extends Fragment implements View.OnClickListener, O
         }
         categoriesListAdapter.setData(categories);
         viewModel.addCategoryToRepo(categories);
+
+        this.selectedCategory = category;
+        viewModel.getTasksFromRepo(category);
     }
 
     @Override
