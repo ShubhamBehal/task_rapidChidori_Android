@@ -31,4 +31,5 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="permission_denied">Permission denied!!! Please try again later or go to settings to give required permissions!!!</string>
+    <string name="image_removed_success">Image removed successfully</string>
 </resources>

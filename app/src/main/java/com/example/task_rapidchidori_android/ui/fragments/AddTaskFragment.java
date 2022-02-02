@@ -45,6 +45,7 @@ import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.typeconverters.ImageBitmapString;
 import com.example.task_rapidchidori_android.ui.adapters.ImagesAdapter;
+import com.example.task_rapidchidori_android.ui.interfaces.ImagesClickListener;
 import com.example.task_rapidchidori_android.ui.viewmodelfactories.AddTaskViewModelFactory;
 import com.example.task_rapidchidori_android.ui.viewmodels.AddTaskViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -57,9 +58,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
-public class AddTaskFragment extends Fragment implements View.OnClickListener {
+public class AddTaskFragment extends Fragment implements View.OnClickListener, ImagesClickListener {
     private FloatingActionButton fabAdd;
-    private FloatingActionButton fabImage;
+    private FloatingActionButton fabImageGallery;
+    private FloatingActionButton fabImageCamera;
     private FloatingActionButton fabAudio;
     private boolean isFabOpen;
     private Animation animOpen;
@@ -89,10 +91,14 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-//                        Bitmap photo = null;
-//                        if (result.getData() != null) {
-//                            photo = (Bitmap) result.getData().getExtras().get("data");
-//                        }
+                        Bitmap bitmap;
+                        if (result.getData() != null) {
+                            bitmap = (Bitmap) result.getData().getExtras().get("data");
+                            bitmaps.add(bitmap);
+                            String imageSource = ImageBitmapString.BitMapToString(bitmap);
+                            imageSources.add(imageSource);
+                            imagesAdapter.setData(bitmaps);
+                        }
                     }
                 });
 
@@ -168,7 +174,8 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
 
     private void initViews(View view) {
         fabAdd = view.findViewById(R.id.fab_add);
-        fabImage = view.findViewById(R.id.fab_add_image);
+        fabImageGallery = view.findViewById(R.id.fab_add_image_gallery);
+        fabImageCamera = view.findViewById(R.id.fab_add_image_camera);
         fabAudio = view.findViewById(R.id.fab_add_audio);
         spCategories = view.findViewById(R.id.sp_categories);
         tvDueDate = view.findViewById(R.id.tv_due_date);
@@ -188,7 +195,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
         animForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
         animBackward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_backward);
 
-        imagesAdapter = new ImagesAdapter(bitmaps);
+        imagesAdapter = new ImagesAdapter(bitmaps, this);
         rvImages.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         rvImages.setAdapter(imagesAdapter);
@@ -197,8 +204,9 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
 
     private void setUpListeners() {
         fabAdd.setOnClickListener(this);
-        fabImage.setOnClickListener(this);
+        fabImageGallery.setOnClickListener(this);
         fabAudio.setOnClickListener(this);
+        fabImageCamera.setOnClickListener(this);
         tvDueDate.setOnClickListener(this);
 
         viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::setUpSpinner);
@@ -239,12 +247,16 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         if (view.getId() == R.id.fab_add) {
             animateFAB();
-        } else if (view.getId() == R.id.fab_add_image) {
+        } else if (view.getId() == R.id.fab_add_image_gallery) {
             handleOnGalleryClick();
-        } else if (view.getId() == R.id.fab_add_audio) {
+            fabAdd.callOnClick();
+        } else if (view.getId() == R.id.fab_add_image_camera) {
             handleOnCameraClick();
+            fabAdd.callOnClick();
         } else if (view.getId() == R.id.tv_due_date) {
             openDateTimePicker();
+        } else if (view.getId() == R.id.fab_add_audio) {
+            //todo hanlde on audio add click
         }
     }
 
@@ -301,16 +313,20 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
     public void animateFAB() {
         if (isFabOpen) {
             fabAdd.startAnimation(animBackward);
-            fabImage.startAnimation(animClose);
+            fabImageGallery.startAnimation(animClose);
+            fabImageCamera.startAnimation(animClose);
             fabAudio.startAnimation(animClose);
-            fabImage.setClickable(false);
+            fabImageGallery.setClickable(false);
+            fabImageCamera.setClickable(false);
             fabAudio.setClickable(false);
             isFabOpen = false;
         } else {
             fabAdd.startAnimation(animForward);
-            fabImage.startAnimation(animOpen);
+            fabImageGallery.startAnimation(animOpen);
+            fabImageCamera.startAnimation(animOpen);
             fabAudio.startAnimation(animOpen);
-            fabImage.setClickable(true);
+            fabImageGallery.setClickable(true);
+            fabImageCamera.setClickable(true);
             fabAudio.setClickable(true);
             isFabOpen = true;
         }
@@ -359,5 +375,14 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onImageDeleteClick(int position) {
+        bitmaps.remove(position);
+        imageSources.remove(position);
+        imagesAdapter.setData(bitmaps);
+        Toast.makeText(requireActivity(), getString(R.string.image_removed_success), Toast.LENGTH_SHORT)
+                .show();
     }
 }

@@ -189,15 +189,32 @@
             android:importantForAccessibility="no"
             android:src="@drawable/ic_audio"
             android:visibility="invisible"
-            app:backgroundTint="@color/color_fab_2"
+            app:backgroundTint="@color/color_fab_3"
             app:fabSize="mini"
-            app:layout_constraintBottom_toTopOf="@id/fab_add_image"
+            app:layout_constraintBottom_toTopOf="@id/fab_add_image_camera"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="@color/white"
             tools:ignore="HardcodedText" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add_image"
+            android:id="@+id/fab_add_image_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_camera"
+            android:visibility="invisible"
+            app:backgroundTint="@color/color_fab_2"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@id/fab_add_image_gallery"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/white"
+            tools:ignore="HardcodedText" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_image_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_10"

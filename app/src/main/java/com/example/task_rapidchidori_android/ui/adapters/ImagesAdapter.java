@@ -11,17 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
+import com.example.task_rapidchidori_android.ui.interfaces.ImagesClickListener;
 
 import java.util.List;
 
 public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder> {
 
     private List<Bitmap> images;
-//    private final TaskItemClickListener listener;
+    private final ImagesClickListener listener;
 
-    public ImagesAdapter(List<Bitmap> images/*, TaskItemClickListener listener*/) {
+    public ImagesAdapter(List<Bitmap> images, ImagesClickListener listener) {
         this.images = images;
-//        this.listener = listener;
+        this.listener = listener;
     }
 
     @NonNull
@@ -37,6 +38,8 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ImagesAdapter.ViewHolder viewHolder, final int position) {
         Bitmap image = images.get(position);
         viewHolder.ivImage.setImageBitmap(image);
+
+        viewHolder.ivDelete.setOnClickListener(view -> listener.onImageDeleteClick(position));
     }
 
     @Override
@@ -52,11 +55,13 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final ImageView ivImage;
+        private final ImageView ivDelete;
 
         public ViewHolder(View view) {
             super(view);
 
             ivImage = view.findViewById(R.id.iv_img);
+            ivDelete = view.findViewById(R.id.iv_delete);
         }
     }
 }
