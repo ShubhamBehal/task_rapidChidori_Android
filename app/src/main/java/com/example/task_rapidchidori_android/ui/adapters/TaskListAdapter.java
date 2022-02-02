@@ -59,9 +59,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(List<TaskInfo> tasks) {
+    public void setData(List<TaskInfo> tasks, String queryText) {
         this.tasks.clear();
-        this.tasks.addAll(tasks);
+        for (TaskInfo t : tasks) {
+            if (t.taskTitle.toLowerCase().contains(queryText.toLowerCase())) {
+                this.tasks.add(t);
+            }
+        }
         notifyDataSetChanged();
     }
 

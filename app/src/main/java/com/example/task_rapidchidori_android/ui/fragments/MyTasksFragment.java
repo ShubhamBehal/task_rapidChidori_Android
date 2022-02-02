@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -60,6 +62,7 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
     private List<TaskInfo> tasks;
     private String selectedCategory = DEFAULT_CATEGORY;
     private TextView tvNoTasks;
+    private SearchView svSearch;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,6 +109,7 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
         rvCategories = view.findViewById(R.id.rv_categories);
         rvTasks = view.findViewById(R.id.rv_tasks);
         tvNoTasks = view.findViewById(R.id.tv_no_tasks);
+        svSearch = view.findViewById(R.id.sv_search);
     }
 
     private void configViews() {
@@ -151,6 +155,19 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
         //live data observer for all tasks in a category
         viewModel.getTasksLiveData().observe(getViewLifecycleOwner(), this::showHideTaskList);
+
+        svSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                taskListAdapter.setData(tasks, s);
+                return false;
+            }
+        });
     }
 
     private void showHideTaskList(List<TaskInfo> taskInfos) {
@@ -166,7 +183,7 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
     private void showTaskList(List<TaskInfo> tasks) {
         this.tasks = tasks;
-        taskListAdapter.setData(tasks);
+        taskListAdapter.setData(tasks, "");
     }
 
     private void showCategoryList(List<CategoryInfo> categories) {
