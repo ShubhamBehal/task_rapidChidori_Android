@@ -45,4 +45,8 @@ public class AddTaskViewModel extends ViewModel {
     public MutableLiveData<Boolean> getIsSaved() {
         return taskRepo.getIsSaved();
     }
+
+    public void resetIsSaved() {
+        taskRepo.getIsSaved().postValue(false);
+    }
 }

@@ -123,6 +123,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener {
                         Toast.LENGTH_SHORT).show();
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                         .navigateUp();
+                viewModel.resetIsSaved();
             }
         });
     }
