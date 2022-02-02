@@ -17,4 +17,7 @@ public interface TaskDao {
 
     @Query("SELECT * FROM  tasks WHERE category LIKE :category")
     List<TaskInfo> getTasks(String category);
+
+    @Query("DELETE FROM tasks WHERE taskID LIKE :taskId")
+    void removeTaskByTaskId(int taskId);
 }

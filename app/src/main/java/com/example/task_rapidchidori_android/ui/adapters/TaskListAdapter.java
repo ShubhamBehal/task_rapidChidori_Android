@@ -13,17 +13,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
+import com.example.task_rapidchidori_android.ui.interfaces.TaskItemClickListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
 
     private final List<TaskInfo> tasks;
-//    private final OnCategorySelect listener;
+    private final TaskItemClickListener listener;
 
-    public TaskListAdapter(List<TaskInfo> tasks/*, OnCategorySelect listener*/) {
+    public TaskListAdapter(List<TaskInfo> tasks, TaskItemClickListener listener) {
         this.tasks = tasks;
-//        this.listener = listener;
+        this.listener = listener;
     }
 
     @NonNull
@@ -41,15 +46,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         viewHolder.tvTitle.setText(task.taskTitle);
         viewHolder.tvDesc.setText(task.taskDescription);
-        viewHolder.tvDueDate.setText(task.dueDate);
-        viewHolder.tvAddedDate.setText(task.dateCreated);
+        viewHolder.tvDueDate.setText(String.format(viewHolder.tvDueDate.getContext()
+                .getString(R.string.due_date), task.dueDate));
+        viewHolder.tvAddedDate.setText(String.format(viewHolder.tvAddedDate.getContext()
+                .getString(R.string.created_on), task.dateCreated));
 
         viewHolder.cvRoot.setOnClickListener(view -> {
-            //todo handle on task click
+            listener.onItemClick(task);
         });
 
         viewHolder.ivDelete.setOnClickListener(view -> {
-            //todo handle on delete task click
+            listener.onTaskDelete(task.taskID);
         });
     }
 
@@ -58,13 +65,30 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         return tasks.size();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setData(List<TaskInfo> tasks, String queryText) {
+    @SuppressLint({"NotifyDataSetChanged", "SimpleDateFormat"})
+    public void setData(List<TaskInfo> tasks, String queryText, boolean sortByName) {
         this.tasks.clear();
         for (TaskInfo t : tasks) {
             if (t.taskTitle.toLowerCase().contains(queryText.toLowerCase())) {
                 this.tasks.add(t);
             }
+        }
+
+        if (sortByName) {
+            Collections.sort(this.tasks, (s1, s2) -> s1.taskTitle.compareToIgnoreCase(s2.taskTitle));
+        } else {
+            Collections.sort(this.tasks, (s1, s2) ->
+            {
+                try {
+                    return Objects.requireNonNull(new SimpleDateFormat("dd/MM/yyyy")
+                            .parse(s1.dateCreated))
+                            .compareTo(new SimpleDateFormat("dd/MM/yyyy")
+                                    .parse(s2.dateCreated));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            });
         }
         notifyDataSetChanged();
     }

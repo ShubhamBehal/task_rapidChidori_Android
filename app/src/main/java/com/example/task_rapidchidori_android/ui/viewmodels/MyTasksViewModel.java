@@ -60,4 +60,8 @@ public class MyTasksViewModel extends ViewModel {
     public SingleLiveEvent<List<TaskInfo>> getTasksLiveData() {
         return taskRepo.getTasksLiveData();
     }
+
+    public void removeTaskFromRepo(int taskId, String selectedCategory) {
+        taskRepo.removeTaskFromRepo(taskId, selectedCategory);
+    }
 }

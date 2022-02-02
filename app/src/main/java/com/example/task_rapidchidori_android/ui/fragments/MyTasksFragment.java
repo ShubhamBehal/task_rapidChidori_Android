@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -34,6 +35,7 @@ import com.example.task_rapidchidori_android.helper.SharedPrefsUtil;
 import com.example.task_rapidchidori_android.ui.adapters.CategoriesListAdapter;
 import com.example.task_rapidchidori_android.ui.adapters.TaskListAdapter;
 import com.example.task_rapidchidori_android.ui.interfaces.OnCategorySelect;
+import com.example.task_rapidchidori_android.ui.interfaces.TaskItemClickListener;
 import com.example.task_rapidchidori_android.ui.viewmodelfactories.MyTasksViewModelFactory;
 import com.example.task_rapidchidori_android.ui.viewmodels.MyTasksViewModel;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -42,7 +44,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyTasksFragment extends Fragment implements View.OnClickListener, OnCategorySelect {
+public class MyTasksFragment extends Fragment implements View.OnClickListener, OnCategorySelect,
+        TaskItemClickListener {
 
     private FloatingActionButton fabAdd;
     private ExtendedFloatingActionButton fabAddTask;
@@ -62,6 +65,7 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
     private String selectedCategory = DEFAULT_CATEGORY;
     private TextView tvNoTasks;
     private SearchView svSearch;
+    private boolean isSortByName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,7 +133,7 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
         if (tasks == null) {
             tasks = new ArrayList<>();
         }
-        taskListAdapter = new TaskListAdapter(tasks);
+        taskListAdapter = new TaskListAdapter(tasks, this);
         rvTasks.setLayoutManager(new LinearLayoutManager(requireActivity()));
         rvTasks.setAdapter(taskListAdapter);
     }
@@ -163,7 +167,7 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
             @Override
             public boolean onQueryTextChange(String s) {
-                taskListAdapter.setData(tasks, s);
+                taskListAdapter.setData(tasks, s, isSortByName);
                 return false;
             }
         });
@@ -182,7 +186,7 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
     private void showTaskList(List<TaskInfo> tasks) {
         this.tasks = tasks;
-        taskListAdapter.setData(tasks, "");
+        taskListAdapter.setData(tasks, "", isSortByName);
     }
 
     private void showCategoryList(List<CategoryInfo> categories) {
@@ -286,6 +290,41 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
         }
         viewModel.addCategoryToRepo(categories);
         super.onDetach();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.sort_by_name) {
+            isSortByName = true;
+            taskListAdapter.setData(tasks, "", true);
+            return false;
+        } else if (item.getItemId() == R.id.sort_by_date) {
+            isSortByName = false;
+            taskListAdapter.setData(tasks, "", false);
+            return false;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(TaskInfo taskInfo) {
+        //todo handle on task item click
+    }
+
+    @Override
+    public void onTaskDelete(int taskId) {
+        showWarningDialog(taskId);
+    }
+
+    private void showWarningDialog(int taskId) {
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(R.string.delete_task_head)
+                .setMessage(R.string.delete_task_desc)
+                .setPositiveButton(R.string.yes, (dialog, which) ->
+                        viewModel.removeTaskFromRepo(taskId, selectedCategory))
+                .setNegativeButton(R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }
 

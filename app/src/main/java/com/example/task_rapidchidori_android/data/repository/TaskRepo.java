@@ -62,4 +62,17 @@ public class TaskRepo {
     public SingleLiveEvent<List<TaskInfo>> getTasksLiveData() {
         return tasksLiveData;
     }
+
+    public void removeTaskFromRepo(int taskId, String selectedCategory) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                database.taskDao().removeTaskByTaskId(taskId);
+
+                tasksLiveData.postValue(database.taskDao().getTasks(selectedCategory));
+            }
+        };
+        thread.start();
+    }
 }
