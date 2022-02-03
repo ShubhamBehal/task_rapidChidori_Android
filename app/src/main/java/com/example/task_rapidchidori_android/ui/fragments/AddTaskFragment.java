@@ -383,9 +383,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             isRecordingPlaying = true;
         }
 
-        mediaPlayer.setOnCompletionListener(mediaPlayer -> {
-            stopPlayingRecording();
-        });
+        mediaPlayer.setOnCompletionListener(mediaPlayer -> stopPlayingRecording());
     }
 
     private void stopPlayingRecording() {
@@ -430,9 +428,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         builder.create();
         builder.show();
 
-        builder.setOnDismissListener(dialogInterface -> {
-            stopMusic(ivPlayStopRecording);
-        });
+        builder.setOnDismissListener(dialogInterface -> stopMusic(ivPlayStopRecording));
     }
 
     private void onStartRecordingClick() {
