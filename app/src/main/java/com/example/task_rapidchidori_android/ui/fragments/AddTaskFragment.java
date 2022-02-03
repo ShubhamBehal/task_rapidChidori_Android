@@ -26,6 +26,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +48,9 @@ import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.typeconverters.ImageBitmapString;
 import com.example.task_rapidchidori_android.ui.adapters.ImagesAdapter;
+import com.example.task_rapidchidori_android.ui.adapters.SubTaskListAdapter;
 import com.example.task_rapidchidori_android.ui.interfaces.ImagesClickListener;
+import com.example.task_rapidchidori_android.ui.interfaces.SubTaskCompleteListener;
 import com.example.task_rapidchidori_android.ui.viewmodelfactories.AddTaskViewModelFactory;
 import com.example.task_rapidchidori_android.ui.viewmodels.AddTaskViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -59,7 +63,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
-public class AddTaskFragment extends Fragment implements View.OnClickListener, ImagesClickListener {
+public class AddTaskFragment extends Fragment implements View.OnClickListener, ImagesClickListener,
+        SubTaskCompleteListener {
+    private final ArrayList<Bitmap> bitmaps = new ArrayList<>();
+    private final ArrayList<String> imageSources = new ArrayList<>();
+    private final ArrayList<String> subtaskList = new ArrayList<>();
     private FloatingActionButton fabAdd;
     private FloatingActionButton fabImageGallery;
     private FloatingActionButton fabImageCamera;
@@ -78,10 +86,11 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private ActivityResultLauncher<String> cameraPermissionLauncher;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
-    private final ArrayList<Bitmap> bitmaps = new ArrayList<>();
-    private final ArrayList<String> imageSources = new ArrayList<>();
     private RecyclerView rvImages;
     private ImagesAdapter imagesAdapter;
+    private SubTaskListAdapter subTaskListAdapter;
+    private RecyclerView rvSubtasks;
+    private Button btnAddSubtask;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -183,6 +192,8 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         tietTitle = view.findViewById(R.id.tiet_title);
         tietDesc = view.findViewById(R.id.tiet_desc);
         rvImages = view.findViewById(R.id.rv_images);
+        btnAddSubtask = view.findViewById(R.id.btn_add_subtask);
+        rvSubtasks = view.findViewById(R.id.rv_subtasks);
     }
 
 
@@ -200,6 +211,11 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         rvImages.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         rvImages.setAdapter(imagesAdapter);
+
+        subTaskListAdapter = new SubTaskListAdapter(subtaskList, this);
+        rvSubtasks.setLayoutManager(new LinearLayoutManager(requireActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
+        rvSubtasks.setAdapter(subTaskListAdapter);
     }
 
 
@@ -209,6 +225,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         fabAudio.setOnClickListener(this);
         fabImageCamera.setOnClickListener(this);
         tvDueDate.setOnClickListener(this);
+        btnAddSubtask.setOnClickListener(this);
 
         viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::setUpSpinner);
 
@@ -258,7 +275,35 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             openDateTimePicker();
         } else if (view.getId() == R.id.fab_add_audio) {
             //todo handle on audio add click
+        } else if (view.getId() == R.id.btn_add_subtask) {
+            openSubTaskPopup();
         }
+    }
+
+    private void openSubTaskPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        LayoutInflater inflater = (requireActivity()).getLayoutInflater();
+        builder.setTitle(R.string.enter_subtask_head);
+        builder.setCancelable(false);
+        View view = inflater.inflate(R.layout.add_category_dialog_view, null);
+        EditText etCategory = view.findViewById(R.id.et_category);
+        etCategory.setHint(R.string.enter_subtask_head);
+        builder.setView(view)
+                .setPositiveButton(R.string.ok, (dialog, id) -> {
+                    if (TextUtils.isEmpty(etCategory.getText())) {
+                        Toast.makeText(requireActivity(),
+                                getString(R.string.subtask_empty_error),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        subtaskList.add(etCategory.getText().toString().trim());
+                        subTaskListAdapter.setData(subtaskList);
+                        Toast.makeText(requireActivity(),
+                                getString(R.string.subtask_added_success_msg),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 
     private void handleOnGalleryClick() {
@@ -352,7 +397,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                             DateFormat.format(DATE_TIME_FORMAT,
                                     Calendar.getInstance().getTimeInMillis()).toString()
                     );
-            viewModel.saveTaskToRepo(taskInfo, imageSources);
+            viewModel.saveTaskToRepo(taskInfo, imageSources, subtaskList);
         }
     }
 
@@ -380,17 +425,13 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
 
     @Override
     public void onImageDeleteClick(int position) {
-
         new AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.delete_task_head)
                 .setMessage(R.string.delete_task_desc)
-                .setPositiveButton(R.string.yes, (dialog, which) -> {
-                    removeImage(position);
-                })
+                .setPositiveButton(R.string.yes, (dialog, which) -> removeImage(position))
                 .setNegativeButton(R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
-
     }
 
     private void removeImage(int position) {
@@ -398,6 +439,25 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         imageSources.remove(position);
         imagesAdapter.setData(bitmaps);
         Toast.makeText(requireActivity(), getString(R.string.image_removed_success), Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    @Override
+    public void onSubTaskComplete(int position) {
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(R.string.subtask_complete_head)
+                .setMessage(R.string.subtask_complete_body)
+                .setPositiveButton(R.string.yes, (dialog, which) -> removeSubtask(position))
+                .setNegativeButton(R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void removeSubtask(int position) {
+        subtaskList.remove(position);
+        subTaskListAdapter.setData(subtaskList);
+        Toast.makeText(requireActivity(), getString(R.string.subtask_remove_success),
+                Toast.LENGTH_SHORT)
                 .show();
     }
 }

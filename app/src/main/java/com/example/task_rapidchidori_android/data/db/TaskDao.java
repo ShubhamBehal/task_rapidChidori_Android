@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.example.task_rapidchidori_android.data.models.ImagesInfo;
+import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 
 import java.util.List;
@@ -25,4 +26,6 @@ public interface TaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertImages(List<ImagesInfo> images);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertSubTasks(List<SubTaskInfo> subTasks);
 }

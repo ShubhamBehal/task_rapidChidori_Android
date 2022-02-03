@@ -17,8 +17,8 @@ import java.util.List;
 
 public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ViewHolder> {
 
-    private List<Bitmap> images;
     private final ImagesClickListener listener;
+    private List<Bitmap> images;
 
     public ImagesAdapter(List<Bitmap> images, ImagesClickListener listener) {
         this.images = images;

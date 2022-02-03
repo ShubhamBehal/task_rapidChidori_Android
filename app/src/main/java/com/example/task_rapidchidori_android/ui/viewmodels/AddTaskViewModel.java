@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.data.models.ImagesInfo;
+import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.repository.CategoryRepo;
 import com.example.task_rapidchidori_android.data.repository.TaskRepo;
@@ -39,12 +40,17 @@ public class AddTaskViewModel extends ViewModel {
         return categoryNames;
     }
 
-    public void saveTaskToRepo(TaskInfo taskInfo, ArrayList<String> imageSources) {
+    public void saveTaskToRepo(TaskInfo taskInfo, ArrayList<String> imageSources, ArrayList<String> subtaskList) {
         List<ImagesInfo> imagesInfoList = new ArrayList<>();
+        List<SubTaskInfo> subTaskInfoList = new ArrayList<>();
         for (String imageSource : imageSources) {
             imagesInfoList.add(new ImagesInfo(taskInfo.taskID, imageSource));
         }
-        taskRepo.saveTaskToRepo(taskInfo, imagesInfoList);
+        for (String subtask : subtaskList) {
+            subTaskInfoList.add(new SubTaskInfo(taskInfo.taskID, subtask));
+        }
+
+        taskRepo.saveTaskToRepo(taskInfo, imagesInfoList, subTaskInfoList);
     }
 
     public MutableLiveData<Boolean> getIsSaved() {

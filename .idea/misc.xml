@@ -27,7 +27,7 @@
         <entry key="app/src/main/res/layout/fragment_my_notes.xml" value="0.45" />
         <entry key="app/src/main/res/layout/fragment_my_tasks.xml" value="0.5128968253968254" />
         <entry key="app/src/main/res/layout/notes_child_view.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/subtasks_child_view.xml" value="0.23777173913043478" />
+        <entry key="app/src/main/res/layout/subtasks_child_view.xml" value="0.45" />
         <entry key="app/src/main/res/layout/task_images_child_layout.xml" value="0.23777173913043478" />
         <entry key="app/src/main/res/layout/tasks_child_view.xml" value="0.5128968253968254" />
         <entry key="app/src/main/res/menu/add_note_menu.xml" value="0.24583333333333332" />

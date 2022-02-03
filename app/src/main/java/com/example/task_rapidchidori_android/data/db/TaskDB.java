@@ -9,10 +9,12 @@ import androidx.room.TypeConverters;
 
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.data.models.ImagesInfo;
+import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.typeconverters.ImageBitmapString;
 
-@Database(entities = {CategoryInfo.class, TaskInfo.class, ImagesInfo.class}, version = 1)
+@Database(entities = {CategoryInfo.class, TaskInfo.class, ImagesInfo.class, SubTaskInfo.class},
+        version = 1)
 @TypeConverters({ImageBitmapString.class})
 public abstract class TaskDB extends RoomDatabase {
     private static volatile TaskDB instance;

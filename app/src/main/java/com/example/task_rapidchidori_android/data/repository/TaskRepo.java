@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.task_rapidchidori_android.data.db.TaskDB;
 import com.example.task_rapidchidori_android.data.models.ImagesInfo;
+import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.helper.SingleLiveEvent;
 
@@ -30,7 +31,7 @@ public class TaskRepo {
         return instance;
     }
 
-    public void saveTaskToRepo(TaskInfo taskInfo, List<ImagesInfo> imageSources) {
+    public void saveTaskToRepo(TaskInfo taskInfo, List<ImagesInfo> imageSources, List<SubTaskInfo> subTasks) {
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -38,6 +39,7 @@ public class TaskRepo {
 
                 database.taskDao().insertTask(taskInfo);
                 database.taskDao().insertImages(imageSources);
+                database.taskDao().insertSubTasks(subTasks);
 
                 isSaved.postValue(true);
             }

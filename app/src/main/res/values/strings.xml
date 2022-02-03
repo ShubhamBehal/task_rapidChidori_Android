@@ -32,4 +32,10 @@
     <string name="no">No</string>
     <string name="permission_denied">Permission denied!!! Please try again later or go to settings to give required permissions!!!</string>
     <string name="image_removed_success">Image removed successfully</string>
+    <string name="subtask_added_success_msg">Subtask Successfully added</string>
+    <string name="enter_subtask_head">Enter Subtask</string>
+    <string name="subtask_empty_error">Subtask title cannot be empty</string>
+    <string name="subtask_complete_head">Warning</string>
+    <string name="subtask_complete_body">Once completed you wont be able to access this subtask!!! Are you sure ?</string>
+    <string name="subtask_remove_success">Subtask successfully marked as completed</string>
 </resources>
