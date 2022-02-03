@@ -14,8 +14,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -59,6 +61,7 @@ import com.example.task_rapidchidori_android.ui.viewmodels.AddTaskViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -91,6 +94,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<String> readMediaPermissionLauncher;
+    private ActivityResultLauncher<String> micPermissionLauncher;
     private RecyclerView rvImages;
     private ImagesAdapter imagesAdapter;
     private SubTaskListAdapter subTaskListAdapter;
@@ -100,6 +104,10 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private Uri audioFile;
     private boolean isAudioPlaying;
     private MediaPlayer mediaPlayer;
+    private boolean isAudioRecording;
+    private MediaRecorder mRecorder;
+    private String recordedAudioPath;
+    private ImageView ivStartRecording;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -163,6 +171,17 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                             }
                         });
 
+        micPermissionLauncher =
+                registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+                        isGranted -> {
+                            if (isGranted) {
+                                startStopRecording();
+                            } else {
+                                Toast.makeText(requireActivity(),
+                                        getString(R.string.permission_denied), Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        });
     }
 
     private void handleOnGalleryPhotoSelect(Intent data) {
@@ -317,16 +336,11 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         builder.setTitle(R.string.audio_title);
         builder.setCancelable(false);
         View view = inflater.inflate(R.layout.add_audio_dialog_view, null);
-        ImageView ivStartRecording = view.findViewById(R.id.iv_start_recording);
+        ivStartRecording = view.findViewById(R.id.iv_start_recording);
         ImageView ivPlayStopRecording = view.findViewById(R.id.iv_stop_play_recording);
         ImageView ivAttachAudio = view.findViewById(R.id.iv_insert_audio);
 
-        ivStartRecording.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //todo start recording from mic
-            }
-        });
+        ivStartRecording.setOnClickListener(view13 -> onStartRecordingClick());
 
         ivPlayStopRecording.setOnClickListener(view12 -> {
             if (audioFile != null) {
@@ -345,13 +359,52 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         ivAttachAudio.setOnClickListener(view1 -> getAudioFromDevice());
 
         builder.setView(view)
-                .setPositiveButton(R.string.save, (dialogInterface, i) -> setUpAudiUI())
+                .setPositiveButton(R.string.save, (dialogInterface, i) -> setUpAudioUI())
                 .setNegativeButton(R.string.cancel, (dialogInterface, i) -> audioFile = null);
         builder.create();
         builder.show();
     }
 
-    private void setUpAudiUI() {
+    private void onStartRecordingClick() {
+        if (hasMicPermissions()) {
+            startStopRecording();
+        } else {
+            micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO);
+        }
+    }
+
+    private void startStopRecording() {
+        if (isAudioRecording) {
+            mRecorder.stop();
+            audioFile = Uri.parse(recordedAudioPath);
+            isAudioRecording = false;
+            ivStartRecording.setImageResource(R.drawable.ic_record_start);
+        } else {
+            recordedAudioPath = Environment.getExternalStorageDirectory() + File.separator
+                    + Environment.DIRECTORY_DCIM + File.separator + Calendar.getInstance().getTimeInMillis() + ".3gp";
+            mRecorder = new MediaRecorder();
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+            mRecorder.setOutputFile(recordedAudioPath);
+            try {
+                mRecorder.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mRecorder.start();
+            isAudioRecording = true;
+            ivStartRecording.setImageResource(R.drawable.ic_record_off);
+        }
+    }
+
+    private boolean hasMicPermissions() {
+        return ContextCompat.checkSelfPermission(requireActivity(),
+                Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void setUpAudioUI() {
         //todo setup audio UI
     }
 
@@ -380,6 +433,14 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         mediaPlayer.start();
         isAudioPlaying = true;
         ivPlayStopRecording.setImageResource(R.drawable.ic_stop);
+
+        mediaPlayer.setOnCompletionListener(mediaPlayer -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+            }
+            isAudioPlaying = false;
+            ivPlayStopRecording.setImageResource(R.drawable.ic_play);
+        });
     }
 
     private void getAudioFromDevice() {
@@ -516,7 +577,8 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                             spCategories.getSelectedItem().toString(),
                             tvDueDate.getText().toString(),
                             DateFormat.format(DATE_TIME_FORMAT,
-                                    Calendar.getInstance().getTimeInMillis()).toString()
+                                    Calendar.getInstance().getTimeInMillis()).toString(),
+                            audioFile != null ? audioFile.toString() : ""
                     );
             viewModel.saveTaskToRepo(taskInfo, imageSources, subtaskList);
         }

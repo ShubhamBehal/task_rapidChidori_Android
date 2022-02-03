@@ -10,7 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_100"
         android:importantForAccessibility="no"
-        android:src="@drawable/ic_record_audio"
+        android:src="@drawable/ic_record_start"
         app:layout_constraintEnd_toStartOf="@id/iv_stop_play_recording"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

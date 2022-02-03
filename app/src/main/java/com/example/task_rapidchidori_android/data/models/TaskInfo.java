@@ -22,11 +22,15 @@ public class TaskInfo {
 
     public String dateCreated;
 
-    public TaskInfo(String taskTitle, String taskDescription, String category, String dueDate, String dateCreated) {
+    public String audioURIString;
+
+    public TaskInfo(String taskTitle, String taskDescription,
+                    String category, String dueDate, String dateCreated, String audioURIString) {
         this.taskTitle = taskTitle;
         this.taskDescription = taskDescription;
         this.category = category;
         this.dueDate = dueDate;
         this.dateCreated = dateCreated;
+        this.audioURIString = audioURIString;
     }
 }
