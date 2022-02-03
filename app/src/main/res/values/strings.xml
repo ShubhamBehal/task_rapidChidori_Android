@@ -42,4 +42,6 @@
     <string name="audio_title">Attach audio file</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="stop_audio">Stop Audio</string>
+    <string name="image_delete_body">Are you sure you want to remove audio from the task ?</string>
 </resources>

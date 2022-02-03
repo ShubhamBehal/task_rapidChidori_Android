@@ -41,6 +41,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.Group;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -108,12 +109,19 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private MediaRecorder mRecorder;
     private String recordedAudioPath;
     private ImageView ivStartRecording;
+    private Group audioGroup;
+    private Button btnPlayStopAudio;
+    private Button btnDeleteAudio;
+    private boolean isRecordingPlaying;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setUpLaunchers();
+    }
 
+    private void setUpLaunchers() {
         audioFileLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -244,6 +252,9 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         rvImages = view.findViewById(R.id.rv_images);
         btnAddSubtask = view.findViewById(R.id.btn_add_subtask);
         rvSubtasks = view.findViewById(R.id.rv_subtasks);
+        audioGroup = view.findViewById(R.id.grp_audio);
+        btnPlayStopAudio = view.findViewById(R.id.btn_play_audio);
+        btnDeleteAudio = view.findViewById(R.id.btn_delete_audio);
     }
 
 
@@ -266,6 +277,14 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         rvSubtasks.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         rvSubtasks.setAdapter(subTaskListAdapter);
+
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioAttributes(
+                new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+        );
     }
 
 
@@ -276,6 +295,8 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         fabImageCamera.setOnClickListener(this);
         tvDueDate.setOnClickListener(this);
         btnAddSubtask.setOnClickListener(this);
+        btnPlayStopAudio.setOnClickListener(this);
+        btnDeleteAudio.setOnClickListener(this);
 
         viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::setUpSpinner);
 
@@ -327,7 +348,52 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             handleOnAudioClick();
         } else if (view.getId() == R.id.btn_add_subtask) {
             openSubTaskPopup();
+        } else if (view.getId() == R.id.btn_play_audio) {
+            startStopAudio();
+        } else if (view.getId() == R.id.btn_delete_audio) {
+            showDeleteAudioWarningDialog();
         }
+    }
+
+    private void showDeleteAudioWarningDialog() {
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(R.string.subtask_complete_head)
+                .setMessage(R.string.image_delete_body)
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    audioFile = null;
+                    setUpAudioUI();
+                })
+                .setNegativeButton(R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void startStopAudio() {
+        if (isRecordingPlaying) {
+            stopPlayingRecording();
+        } else {
+            try {
+                mediaPlayer.setDataSource(requireActivity(), audioFile);
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mediaPlayer.start();
+            btnPlayStopAudio.setText(R.string.stop_audio);
+            isRecordingPlaying = true;
+        }
+
+        mediaPlayer.setOnCompletionListener(mediaPlayer -> {
+            stopPlayingRecording();
+        });
+    }
+
+    private void stopPlayingRecording() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+        isRecordingPlaying = false;
+        btnPlayStopAudio.setText(R.string.play_audio);
     }
 
     private void handleOnAudioClick() {
@@ -363,6 +429,10 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                 .setNegativeButton(R.string.cancel, (dialogInterface, i) -> audioFile = null);
         builder.create();
         builder.show();
+
+        builder.setOnDismissListener(dialogInterface -> {
+            stopMusic(ivPlayStopRecording);
+        });
     }
 
     private void onStartRecordingClick() {
@@ -405,7 +475,11 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     }
 
     private void setUpAudioUI() {
-        //todo setup audio UI
+        if (audioFile == null) {
+            audioGroup.setVisibility(View.GONE);
+        } else {
+            audioGroup.setVisibility(View.VISIBLE);
+        }
     }
 
     private void stopMusic(ImageView ivPlayStopRecording) {
@@ -417,13 +491,6 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     }
 
     private void playMusic(ImageView ivPlayStopRecording) {
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioAttributes(
-                new AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-        );
         try {
             mediaPlayer.setDataSource(requireActivity(), audioFile);
             mediaPlayer.prepare();
