@@ -20,6 +20,7 @@
         <entry key="app/src/main/res/layout/activity_notes.xml" value="0.24094202898550723" />
         <entry key="app/src/main/res/layout/activity_splashscreen.xml" value="0.2341485507246377" />
         <entry key="app/src/main/res/layout/activity_tasks.xml" value="0.5128968253968254" />
+        <entry key="app/src/main/res/layout/add_audio_dialog_view.xml" value="0.5128968253968254" />
         <entry key="app/src/main/res/layout/add_category_dialog_view.xml" value="0.2341485507246377" />
         <entry key="app/src/main/res/layout/categories_child_view.xml" value="0.23777173913043478" />
         <entry key="app/src/main/res/layout/fragment_add_note.xml" value="0.25" />

@@ -38,4 +38,8 @@
     <string name="subtask_complete_head">Warning</string>
     <string name="subtask_complete_body">Once completed you wont be able to access this subtask!!! Are you sure ?</string>
     <string name="subtask_remove_success">Subtask successfully marked as completed</string>
+    <string name="audio_file_not_inserted_error">No Audio file inserted as of now</string>
+    <string name="audio_title">Attach audio file</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 </resources>

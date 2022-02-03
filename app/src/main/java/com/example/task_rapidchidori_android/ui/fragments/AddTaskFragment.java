@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -28,6 +30,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +60,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -86,16 +90,31 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private ActivityResultLauncher<String> cameraPermissionLauncher;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
+    private ActivityResultLauncher<String> readMediaPermissionLauncher;
     private RecyclerView rvImages;
     private ImagesAdapter imagesAdapter;
     private SubTaskListAdapter subTaskListAdapter;
     private RecyclerView rvSubtasks;
     private Button btnAddSubtask;
+    private ActivityResultLauncher<Intent> audioFileLauncher;
+    private Uri audioFile;
+    private boolean isAudioPlaying;
+    private MediaPlayer mediaPlayer;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        audioFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getData() != null) {
+                            audioFile = result.getData().getData();
+                        }
+                    }
+                });
 
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -120,7 +139,6 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                     }
                 });
 
-
         cameraPermissionLauncher =
                 registerForActivityResult(new ActivityResultContracts.RequestPermission(),
                         isGranted -> {
@@ -132,6 +150,19 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                                         .show();
                             }
                         });
+
+        readMediaPermissionLauncher =
+                registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+                        isGranted -> {
+                            if (isGranted) {
+                                openMediaStorage();
+                            } else {
+                                Toast.makeText(requireActivity(),
+                                        getString(R.string.permission_denied), Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        });
+
     }
 
     private void handleOnGalleryPhotoSelect(Intent data) {
@@ -274,10 +305,100 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         } else if (view.getId() == R.id.tv_due_date) {
             openDateTimePicker();
         } else if (view.getId() == R.id.fab_add_audio) {
-            //todo handle on audio add click
+            handleOnAudioClick();
         } else if (view.getId() == R.id.btn_add_subtask) {
             openSubTaskPopup();
         }
+    }
+
+    private void handleOnAudioClick() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        LayoutInflater inflater = (requireActivity()).getLayoutInflater();
+        builder.setTitle(R.string.audio_title);
+        builder.setCancelable(false);
+        View view = inflater.inflate(R.layout.add_audio_dialog_view, null);
+        ImageView ivStartRecording = view.findViewById(R.id.iv_start_recording);
+        ImageView ivPlayStopRecording = view.findViewById(R.id.iv_stop_play_recording);
+        ImageView ivAttachAudio = view.findViewById(R.id.iv_insert_audio);
+
+        ivStartRecording.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //todo start recording from mic
+            }
+        });
+
+        ivPlayStopRecording.setOnClickListener(view12 -> {
+            if (audioFile != null) {
+                if (isAudioPlaying) {
+                    stopMusic(ivPlayStopRecording);
+                } else {
+                    playMusic(ivPlayStopRecording);
+                }
+            } else {
+                Toast.makeText(requireActivity(),
+                        getString(R.string.audio_file_not_inserted_error),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ivAttachAudio.setOnClickListener(view1 -> getAudioFromDevice());
+
+        builder.setView(view)
+                .setPositiveButton(R.string.save, (dialogInterface, i) -> setUpAudiUI())
+                .setNegativeButton(R.string.cancel, (dialogInterface, i) -> audioFile = null);
+        builder.create();
+        builder.show();
+    }
+
+    private void setUpAudiUI() {
+        //todo setup audio UI
+    }
+
+    private void stopMusic(ImageView ivPlayStopRecording) {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+        isAudioPlaying = false;
+        ivPlayStopRecording.setImageResource(R.drawable.ic_play);
+    }
+
+    private void playMusic(ImageView ivPlayStopRecording) {
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioAttributes(
+                new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+        );
+        try {
+            mediaPlayer.setDataSource(requireActivity(), audioFile);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.start();
+        isAudioPlaying = true;
+        ivPlayStopRecording.setImageResource(R.drawable.ic_stop);
+    }
+
+    private void getAudioFromDevice() {
+        if (hasMediaStoragePermission()) {
+            openMediaStorage();
+        } else {
+            readMediaPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+    }
+
+    private boolean hasMediaStoragePermission() {
+        return ContextCompat.checkSelfPermission(requireActivity(),
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void openMediaStorage() {
+        Intent audioIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+        audioFileLauncher.launch(audioIntent);
     }
 
     private void openSubTaskPopup() {
