@@ -277,14 +277,6 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         rvSubtasks.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         rvSubtasks.setAdapter(subTaskListAdapter);
-
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioAttributes(
-                new AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-        );
     }
 
 
@@ -372,6 +364,12 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         if (isRecordingPlaying) {
             stopPlayingRecording();
         } else {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioAttributes(
+                    new AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .build());
             try {
                 mediaPlayer.setDataSource(requireActivity(), audioFile);
                 mediaPlayer.prepare();
@@ -428,7 +426,14 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         builder.create();
         builder.show();
 
-        builder.setOnDismissListener(dialogInterface -> stopMusic(ivPlayStopRecording));
+        builder.setOnDismissListener(dialogInterface -> {
+            stopMusic(ivPlayStopRecording);
+            if (isAudioRecording) {
+                mRecorder.stop();
+                audioFile = Uri.parse(recordedAudioPath);
+                isAudioRecording = false;
+            }
+        });
     }
 
     private void onStartRecordingClick() {
@@ -487,6 +492,12 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     }
 
     private void playMusic(ImageView ivPlayStopRecording) {
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioAttributes(
+                new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build());
         try {
             mediaPlayer.setDataSource(requireActivity(), audioFile);
             mediaPlayer.prepare();
