@@ -14,7 +14,6 @@ public class CategoryRepo {
     private static CategoryRepo instance;
     private final TaskDB database;
     private final MutableLiveData<List<CategoryInfo>> categoryLiveData = new MutableLiveData<>();
-
     private CategoryRepo(TaskDB database) {
         this.database = database;
     }

@@ -4,6 +4,7 @@ import static com.example.task_rapidchidori_android.helper.Constants.DEFAULT_CAT
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -206,6 +207,9 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
             showPopup();
             fabAdd.callOnClick();
         }
+
+
+
     }
 
     private void showPopup() {
@@ -294,6 +298,7 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         if (item.getItemId() == R.id.sort_by_name) {
             isSortByName = true;
             taskListAdapter.setData(tasks, "", true);
@@ -302,7 +307,14 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
             isSortByName = false;
             taskListAdapter.setData(tasks, "", false);
             return false;
+        } else if(item.getItemId() == R.id.edit_category)
+        {
+            //Toast.makeText(requireActivity(), "bhajiya", Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
+                    .navigate(R.id.action_myTasksFragment_to_editCategoryFragment);
         }
+
+
         return super.onOptionsItemSelected(item);
     }
 
