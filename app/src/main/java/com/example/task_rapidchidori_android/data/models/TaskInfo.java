@@ -21,6 +21,10 @@ public class TaskInfo {
 
     public String audioURIString;
 
+    public boolean isCompleted;
+
+    public String completedDate;
+
     public TaskInfo(long taskID, String taskTitle, String taskDescription, String category, String dueDate, String dateCreated, String audioURIString) {
         this.taskID = taskID;
         this.taskTitle = taskTitle;

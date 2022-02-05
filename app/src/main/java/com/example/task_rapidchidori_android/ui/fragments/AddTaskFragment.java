@@ -121,6 +121,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private TextView tvSubtaskListHead;
     private TextView tvAudioHead;
     private long taskId;
+    private Button btnMarkTaskComplete;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -284,6 +285,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         tvImageListHead = view.findViewById(R.id.tv_attached_images);
         tvSubtaskListHead = view.findViewById(R.id.tv_attached_subtasks_head);
         tvAudioHead = view.findViewById(R.id.tv_audio_head);
+        btnMarkTaskComplete = view.findViewById(R.id.btn_mark_complete);
     }
 
 
@@ -291,6 +293,10 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         viewModel = new ViewModelProvider(this,
                 new AddTaskViewModelFactory(requireActivity().getApplication()))
                 .get(AddTaskViewModel.class);
+
+        if (taskId != 0) {
+            btnMarkTaskComplete.setVisibility(View.VISIBLE);
+        }
 
         Objects.requireNonNull(((TaskActivity) requireActivity()).getSupportActionBar())
                 .setTitle(taskId != 0 ? R.string.edit_task_head : R.string.add_task_head);
@@ -330,6 +336,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         btnAddSubtask.setOnClickListener(this);
         btnPlayStopAudio.setOnClickListener(this);
         btnDeleteAudio.setOnClickListener(this);
+        btnMarkTaskComplete.setOnClickListener(this);
 
         viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::setUpSpinner);
 
@@ -351,6 +358,14 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                         .navigateUp();
                 viewModel.resetIsSaved();
             }
+        });
+
+        viewModel.isCompleted().observe(getViewLifecycleOwner(), aBoolean -> {
+            Toast.makeText(requireActivity(), getString(R.string.marked_completed),
+                    Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                    .navigateUp();
+            viewModel.resetIsCompleted();
         });
 
         viewModel.getTaskInfo().observe(getViewLifecycleOwner(), this::fillData);
@@ -417,7 +432,23 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             startStopAudio();
         } else if (view.getId() == R.id.btn_delete_audio) {
             showDeleteAudioWarningDialog();
+        } else if (view.getId() == R.id.btn_mark_complete) {
+            showCompleteWarningDialog();
         }
+    }
+
+    private void showCompleteWarningDialog() {
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(R.string.subtask_complete_head)
+                .setMessage(R.string.task_complete_msg)
+                .setPositiveButton(R.string.yes, (dialog, which) -> markTaskComplete())
+                .setNegativeButton(R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void markTaskComplete() {
+        viewModel.markTaskComplete(taskId);
     }
 
     private void showDeleteAudioWarningDialog() {

@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
@@ -43,16 +45,21 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
         TaskInfo task = tasks.get(position);
+        if (task.isCompleted) {
+            viewHolder.clParent.setBackgroundColor(
+                    ContextCompat.getColor(viewHolder.clParent.getContext(), R.color.grey_opacity));
+            viewHolder.tvDueDate.setText(String.format(viewHolder.clParent.getContext()
+                    .getString(R.string.completed_on), task.completedDate));
+        } else {
+            viewHolder.tvDueDate.setText(String.format(viewHolder.tvDueDate.getContext()
+                    .getString(R.string.due_date), task.dueDate));
+            viewHolder.cvRoot.setOnClickListener(view -> listener.onItemClick(task));
+        }
 
         viewHolder.tvTitle.setText(task.taskTitle);
         viewHolder.tvDesc.setText(task.taskDescription);
-        viewHolder.tvDueDate.setText(String.format(viewHolder.tvDueDate.getContext()
-                .getString(R.string.due_date), task.dueDate));
         viewHolder.tvAddedDate.setText(String.format(viewHolder.tvAddedDate.getContext()
                 .getString(R.string.created_on), task.dateCreated));
-
-        viewHolder.cvRoot.setOnClickListener(view -> listener.onItemClick(task));
-
         viewHolder.ivDelete.setOnClickListener(view -> listener.onTaskDelete(task.taskID));
     }
 
@@ -96,6 +103,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         private final TextView tvAddedDate;
         private final ImageView ivDelete;
         private final CardView cvRoot;
+        private final ConstraintLayout clParent;
 
         public ViewHolder(View view) {
             super(view);
@@ -105,6 +113,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             tvDueDate = view.findViewById(R.id.tv_due_date);
             tvAddedDate = view.findViewById(R.id.tv_added_date);
             ivDelete = view.findViewById(R.id.iv_delete);
+            clParent = view.findViewById(R.id.cl_parent);
         }
     }
 }

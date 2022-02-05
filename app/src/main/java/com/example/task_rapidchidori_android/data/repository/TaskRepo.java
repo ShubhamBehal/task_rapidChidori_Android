@@ -1,6 +1,9 @@
 package com.example.task_rapidchidori_android.data.repository;
 
+import static com.example.task_rapidchidori_android.helper.Constants.DATE_TIME_FORMAT;
+
 import android.content.Context;
+import android.text.format.DateFormat;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -10,6 +13,7 @@ import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.helper.SingleLiveEvent;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class TaskRepo {
@@ -17,6 +21,7 @@ public class TaskRepo {
     private static TaskRepo instance;
     private final TaskDB database;
     private final MutableLiveData<Boolean> isSaved = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isCompleted = new MutableLiveData<>();
     private final SingleLiveEvent<List<TaskInfo>> tasksLiveData = new SingleLiveEvent<>();
     private final SingleLiveEvent<TaskInfo> taskInfoSingleLiveEvent = new SingleLiveEvent<>();
     private final SingleLiveEvent<List<ImagesInfo>> imagesInfoSingleLiveEvent = new SingleLiveEvent<>();
@@ -114,5 +119,23 @@ public class TaskRepo {
 
     public SingleLiveEvent<List<SubTaskInfo>> getSubtasksInfoSingleLiveEvent() {
         return subtasksInfoSingleLiveEvent;
+    }
+
+    public void markTaskComplete(long taskId) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                database.taskDao().updateTask(taskId, DateFormat.format(DATE_TIME_FORMAT,
+                        Calendar.getInstance().getTimeInMillis()).toString(), true);
+
+                isCompleted.postValue(true);
+            }
+        };
+        thread.start();
+    }
+
+    public MutableLiveData<Boolean> getIsCompleted() {
+        return isCompleted;
     }
 }

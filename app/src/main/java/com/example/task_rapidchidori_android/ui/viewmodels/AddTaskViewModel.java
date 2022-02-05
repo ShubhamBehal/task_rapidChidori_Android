@@ -77,4 +77,16 @@ public class AddTaskViewModel extends ViewModel {
     public SingleLiveEvent<List<SubTaskInfo>> getSubTaskInfo() {
         return taskRepo.getSubtasksInfoSingleLiveEvent();
     }
+
+    public void markTaskComplete(long taskId) {
+        taskRepo.markTaskComplete(taskId);
+    }
+
+    public MutableLiveData<Boolean> isCompleted() {
+        return taskRepo.getIsCompleted();
+    }
+
+    public void resetIsCompleted() {
+        taskRepo.getIsCompleted().postValue(false);
+    }
 }

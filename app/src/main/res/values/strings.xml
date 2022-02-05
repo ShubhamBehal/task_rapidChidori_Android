@@ -50,4 +50,7 @@
     <string name="audio_attached">1 Audio attached with this task :</string>
     <string name="edit_task_head">Edit Task</string>
     <string name="task_edit_success">Task Edited Successfully</string>
+    <string name="task_complete_msg">Once you mark a task complete you won\'t be able to access it again!!!\n Are you sure, you want to mark it as completed?</string>
+    <string name="marked_completed">Task marked completed successfully</string>
+    <string name="completed_on">Completed on- %s</string>
 </resources>

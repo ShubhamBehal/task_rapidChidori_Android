@@ -49,4 +49,8 @@ public interface TaskDao {
 
     @Query("DELETE FROM subTasks WHERE taskID LIKE :taskID")
     void deleteSubtasksOfTask(long taskID);
+
+    @Query("UPDATE tasks SET isCompleted = :isCompleted, completedDate = :completedDate" +
+            " WHERE taskID= :taskId")
+    void updateTask(long taskId, String completedDate, boolean isCompleted);
 }
