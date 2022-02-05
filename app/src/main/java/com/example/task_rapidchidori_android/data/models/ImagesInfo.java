@@ -10,11 +10,11 @@ public class ImagesInfo {
     @PrimaryKey(autoGenerate = true)
     public int imageId;
 
-    public int taskId;
+    public long taskId;
 
     public String image;
 
-    public ImagesInfo(int taskId, @NonNull String image) {
+    public ImagesInfo(long taskId, @NonNull String image) {
         this.taskId = taskId;
         this.image = image;
     }

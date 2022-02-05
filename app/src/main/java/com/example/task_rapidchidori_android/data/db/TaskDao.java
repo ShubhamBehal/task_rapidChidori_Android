@@ -21,7 +21,7 @@ public interface TaskDao {
     List<TaskInfo> getTasks(String category);
 
     @Query("DELETE FROM tasks WHERE taskID LIKE :taskId")
-    void removeTaskByTaskId(int taskId);
+    void removeTaskByTaskId(long taskId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertImages(List<ImagesInfo> images);
@@ -30,5 +30,8 @@ public interface TaskDao {
     void insertSubTasks(List<SubTaskInfo> subTasks);
 
     @Query("SELECT * FROM tasks WHERE taskID LIKE :taskId")
-    TaskInfo getTaskByTaskId(int taskId);
+    TaskInfo getTaskByTaskId(long taskId);
+
+    @Query("SELECT * FROM images WHERE taskID LIKE :taskId")
+    List<ImagesInfo> getImagesByTaskId(long taskId);
 }

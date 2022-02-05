@@ -9,11 +9,11 @@ public class SubTaskInfo {
     @PrimaryKey(autoGenerate = true)
     public int subTaskId;
 
-    public int taskId;
+    public long taskId;
 
     public String subTaskTitle;
 
-    public SubTaskInfo(int taskId, String subTaskTitle) {
+    public SubTaskInfo(long taskId, String subTaskTitle) {
         this.taskId = taskId;
         this.subTaskTitle = subTaskTitle;
     }

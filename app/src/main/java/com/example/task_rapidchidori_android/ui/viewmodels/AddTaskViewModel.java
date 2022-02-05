@@ -62,11 +62,15 @@ public class AddTaskViewModel extends ViewModel {
         taskRepo.getIsSaved().postValue(false);
     }
 
-    public void getDataFromRepo(int taskId) {
+    public void getDataFromRepo(long taskId) {
         taskRepo.getDataByTaskId(taskId);
     }
 
-    public SingleLiveEvent<TaskInfo> getTaskInfo(){
+    public SingleLiveEvent<TaskInfo> getTaskInfo() {
         return taskRepo.getTaskInfoSingleLiveEvent();
+    }
+
+    public SingleLiveEvent<List<ImagesInfo>> getImageInfo() {
+        return taskRepo.getImagesInfoSingleLiveEvent();
     }
 }

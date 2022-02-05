@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "tasks")
 public class TaskInfo {
 
-    @PrimaryKey(autoGenerate = true)
-    public int taskID;
+    @PrimaryKey
+    public long taskID;
 
     public String taskTitle;
 
@@ -21,8 +21,8 @@ public class TaskInfo {
 
     public String audioURIString;
 
-    public TaskInfo(String taskTitle, String taskDescription,
-                    String category, String dueDate, String dateCreated, String audioURIString) {
+    public TaskInfo(long taskID, String taskTitle, String taskDescription, String category, String dueDate, String dateCreated, String audioURIString) {
+        this.taskID = taskID;
         this.taskTitle = taskTitle;
         this.taskDescription = taskDescription;
         this.category = category;

@@ -52,6 +52,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
+import com.example.task_rapidchidori_android.data.models.ImagesInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.typeconverters.ImageBitmapString;
 import com.example.task_rapidchidori_android.ui.activities.TaskActivity;
@@ -118,7 +119,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private TextView tvImageListHead;
     private TextView tvSubtaskListHead;
     private TextView tvAudioHead;
-    private int taskId;
+    private long taskId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -260,7 +261,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
 
     private void getArgumentData() {
         if (getArguments() != null) {
-            taskId = getArguments().getInt(TASK_ID, 0);
+            taskId = getArguments().getLong(TASK_ID, 0);
         }
     }
 
@@ -349,6 +350,12 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         });
 
         viewModel.getTaskInfo().observe(getViewLifecycleOwner(), this::fillData);
+        viewModel.getImageInfo().observe(getViewLifecycleOwner(), imagesInfo -> {
+            for (ImagesInfo info : imagesInfo) {
+                bitmaps.add(ImageBitmapString.StringToBitMap(info.image));
+                refreshImagesList();
+            }
+        });
     }
 
     private void fillData(TaskInfo taskInfo) {
@@ -713,7 +720,9 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private void handleTaskSaveClick() {
         if (isInputValid()) {
             TaskInfo taskInfo =
-                    new TaskInfo(Objects.requireNonNull(tietTitle.getText()).toString(),
+                    new TaskInfo(
+                            Calendar.getInstance().getTimeInMillis(),
+                            Objects.requireNonNull(tietTitle.getText()).toString(),
                             Objects.requireNonNull(tietDesc.getText()).toString(),
                             spCategories.getSelectedItem().toString(),
                             tvDueDate.getText().toString(),
