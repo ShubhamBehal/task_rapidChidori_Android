@@ -53,6 +53,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.data.models.ImagesInfo;
+import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.typeconverters.ImageBitmapString;
 import com.example.task_rapidchidori_android.ui.activities.TaskActivity;
@@ -353,8 +354,15 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         viewModel.getImageInfo().observe(getViewLifecycleOwner(), imagesInfo -> {
             for (ImagesInfo info : imagesInfo) {
                 bitmaps.add(ImageBitmapString.StringToBitMap(info.image));
-                refreshImagesList();
             }
+            refreshImagesList();
+        });
+
+        viewModel.getSubTaskInfo().observe(getViewLifecycleOwner(), subTaskInfos -> {
+            for (SubTaskInfo subTaskInfo : subTaskInfos) {
+                subtaskList.add(subTaskInfo.subTaskTitle);
+            }
+            refreshSubtaskList();
         });
     }
 

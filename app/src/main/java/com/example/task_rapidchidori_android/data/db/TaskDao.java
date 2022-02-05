@@ -34,4 +34,7 @@ public interface TaskDao {
 
     @Query("SELECT * FROM images WHERE taskID LIKE :taskId")
     List<ImagesInfo> getImagesByTaskId(long taskId);
+
+    @Query("SELECT * FROM subTasks WHERE taskID LIKE :taskId")
+    List<SubTaskInfo> getSubtasksByTaskId(long taskId);
 }

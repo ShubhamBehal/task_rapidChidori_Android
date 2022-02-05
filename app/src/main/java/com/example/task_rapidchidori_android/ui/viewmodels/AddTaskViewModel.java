@@ -73,4 +73,9 @@ public class AddTaskViewModel extends ViewModel {
     public SingleLiveEvent<List<ImagesInfo>> getImageInfo() {
         return taskRepo.getImagesInfoSingleLiveEvent();
     }
+
+    public SingleLiveEvent<List<SubTaskInfo>> getSubTaskInfo() {
+        return taskRepo.getSubtasksInfoSingleLiveEvent();
+    }
+
 }

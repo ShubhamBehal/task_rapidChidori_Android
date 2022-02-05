@@ -20,6 +20,7 @@ public class TaskRepo {
     private final SingleLiveEvent<List<TaskInfo>> tasksLiveData = new SingleLiveEvent<>();
     private final SingleLiveEvent<TaskInfo> taskInfoSingleLiveEvent = new SingleLiveEvent<>();
     private final SingleLiveEvent<List<ImagesInfo>> imagesInfoSingleLiveEvent = new SingleLiveEvent<>();
+    private final SingleLiveEvent<List<SubTaskInfo>> subtasksInfoSingleLiveEvent = new SingleLiveEvent<>();
 
     private TaskRepo(TaskDB database) {
         this.database = database;
@@ -89,6 +90,7 @@ public class TaskRepo {
                 super.run();
                 taskInfoSingleLiveEvent.postValue(database.taskDao().getTaskByTaskId(taskId));
                 imagesInfoSingleLiveEvent.postValue(database.taskDao().getImagesByTaskId(taskId));
+                subtasksInfoSingleLiveEvent.postValue(database.taskDao().getSubtasksByTaskId(taskId));
             }
         };
         thread.start();
@@ -100,5 +102,9 @@ public class TaskRepo {
 
     public SingleLiveEvent<List<ImagesInfo>> getImagesInfoSingleLiveEvent() {
         return imagesInfoSingleLiveEvent;
+    }
+
+    public SingleLiveEvent<List<SubTaskInfo>> getSubtasksInfoSingleLiveEvent() {
+        return subtasksInfoSingleLiveEvent;
     }
 }
