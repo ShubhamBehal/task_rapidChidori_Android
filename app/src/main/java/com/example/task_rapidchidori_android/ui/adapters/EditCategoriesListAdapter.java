@@ -41,7 +41,9 @@ public class EditCategoriesListAdapter extends RecyclerView.Adapter<EditCategori
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Viewholder holder, final int position) {
+    public void onBindViewHolder(@NonNull Viewholder holder, final int position)
+
+    {
 
         String category = categories.get(position).category;
         boolean isSelected = categories.get(position).isSelected;
