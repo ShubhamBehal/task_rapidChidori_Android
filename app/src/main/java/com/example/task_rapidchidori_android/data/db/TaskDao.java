@@ -28,4 +28,7 @@ public interface TaskDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertSubTasks(List<SubTaskInfo> subTasks);
+
+    @Query("SELECT * FROM tasks WHERE taskID LIKE :taskId")
+    TaskInfo getTaskByTaskId(int taskId);
 }

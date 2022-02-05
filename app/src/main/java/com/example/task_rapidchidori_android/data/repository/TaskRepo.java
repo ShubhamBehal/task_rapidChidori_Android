@@ -18,6 +18,7 @@ public class TaskRepo {
     private final TaskDB database;
     private final MutableLiveData<Boolean> isSaved = new MutableLiveData<>();
     private final SingleLiveEvent<List<TaskInfo>> tasksLiveData = new SingleLiveEvent<>();
+    private final SingleLiveEvent<TaskInfo> taskInfoSingleLiveEvent = new SingleLiveEvent<>();
 
     private TaskRepo(TaskDB database) {
         this.database = database;
@@ -78,5 +79,20 @@ public class TaskRepo {
             }
         };
         thread.start();
+    }
+
+    public void getDataByTaskId(int taskId) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                taskInfoSingleLiveEvent.postValue(database.taskDao().getTaskByTaskId(taskId));
+            }
+        };
+        thread.start();
+    }
+
+    public SingleLiveEvent<TaskInfo> getTaskInfoSingleLiveEvent() {
+        return taskInfoSingleLiveEvent;
     }
 }

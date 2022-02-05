@@ -1,6 +1,7 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
 import static com.example.task_rapidchidori_android.helper.Constants.DATE_TIME_FORMAT;
+import static com.example.task_rapidchidori_android.helper.Constants.TASK_ID;
 
 import android.Manifest;
 import android.app.Activity;
@@ -53,6 +54,7 @@ import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.typeconverters.ImageBitmapString;
+import com.example.task_rapidchidori_android.ui.activities.TaskActivity;
 import com.example.task_rapidchidori_android.ui.adapters.ImagesAdapter;
 import com.example.task_rapidchidori_android.ui.adapters.SubTaskListAdapter;
 import com.example.task_rapidchidori_android.ui.interfaces.ImagesClickListener;
@@ -116,6 +118,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private TextView tvImageListHead;
     private TextView tvSubtaskListHead;
     private TextView tvAudioHead;
+    private int taskId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -248,10 +251,17 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getArgumentData();
         initViews(view);
         configViews();
         viewModel.getCategoriesFromRepo();
         setUpListeners();
+    }
+
+    private void getArgumentData() {
+        if (getArguments() != null) {
+            taskId = getArguments().getInt(TASK_ID, 0);
+        }
     }
 
     private void initViews(View view) {
@@ -280,6 +290,9 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                 new AddTaskViewModelFactory(requireActivity().getApplication()))
                 .get(AddTaskViewModel.class);
 
+        Objects.requireNonNull(((TaskActivity) requireActivity()).getSupportActionBar())
+                .setTitle(taskId != 0 ? R.string.edit_task_head : R.string.add_task_head);
+
         animOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         animClose = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
         animForward = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_forward);
@@ -294,6 +307,15 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         rvSubtasks.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         rvSubtasks.setAdapter(subTaskListAdapter);
+
+        //edit task case
+        if (taskId != 0) {
+            getDataFromRepoAndFill();
+        }
+    }
+
+    private void getDataFromRepoAndFill() {
+        viewModel.getDataFromRepo(taskId);
     }
 
 
@@ -325,6 +347,21 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                 viewModel.resetIsSaved();
             }
         });
+
+        viewModel.getTaskInfo().observe(getViewLifecycleOwner(), this::fillData);
+    }
+
+    private void fillData(TaskInfo taskInfo) {
+        tietTitle.setText(taskInfo.taskTitle);
+        tietDesc.setText(taskInfo.taskDescription);
+        spCategories.setSelection(getIndex(spCategories, taskInfo.category));
+        tvDueDate.setText(taskInfo.dueDate);
+        tvDueDate.setTextColor(ContextCompat.getColor(requireActivity(), R.color.black));
+
+        if (!taskInfo.audioURIString.trim().equalsIgnoreCase("")) {
+            audioFile = Uri.parse(taskInfo.audioURIString);
+            setUpAudioUI();
+        }
     }
 
     private void setUpSpinner(List<CategoryInfo> categoryInfos) {
@@ -746,5 +783,15 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         Toast.makeText(requireActivity(), getString(R.string.subtask_remove_success),
                 Toast.LENGTH_SHORT)
                 .show();
+    }
+
+    private int getIndex(Spinner spinner, String myString) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
+                return i;
+            }
+        }
+
+        return 0;
     }
 }

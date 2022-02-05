@@ -1,6 +1,7 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
 import static com.example.task_rapidchidori_android.helper.Constants.DEFAULT_CATEGORY;
+import static com.example.task_rapidchidori_android.helper.Constants.TASK_ID;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -308,7 +309,11 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
     @Override
     public void onItemClick(TaskInfo taskInfo) {
-        //todo handle on task item click
+        Bundle bundle = new Bundle();
+        bundle.putInt(TASK_ID, taskInfo.taskID);
+
+        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                .navigate(R.id.action_myTasksFragment_to_addTaskFragment, bundle);
     }
 
     @Override

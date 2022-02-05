@@ -11,6 +11,7 @@ import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.repository.CategoryRepo;
 import com.example.task_rapidchidori_android.data.repository.TaskRepo;
+import com.example.task_rapidchidori_android.helper.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,5 +60,13 @@ public class AddTaskViewModel extends ViewModel {
 
     public void resetIsSaved() {
         taskRepo.getIsSaved().postValue(false);
+    }
+
+    public void getDataFromRepo(int taskId) {
+        taskRepo.getDataByTaskId(taskId);
+    }
+
+    public SingleLiveEvent<TaskInfo> getTaskInfo(){
+        return taskRepo.getTaskInfoSingleLiveEvent();
     }
 }

@@ -48,4 +48,5 @@
     <string name="subtask_list_head">SubTasks Attached:</string>
     <string name="no_audio_attached">No Audio Attached</string>
     <string name="audio_attached">1 Audio attached with this task :</string>
+    <string name="edit_task_head">Edit Task</string>
 </resources>
