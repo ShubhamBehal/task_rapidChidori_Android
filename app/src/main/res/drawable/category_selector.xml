@@ -1,0 +1,4 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/category_unselected_background" android:state_focused="false" android:state_selected="false" />
+    <item android:drawable="@drawable/category_selected_backround" android:state_focused="false" android:state_selected="true" />
+</selector>

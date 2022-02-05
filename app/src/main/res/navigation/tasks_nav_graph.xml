@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tasks_nav_graph"
+    app:startDestination="@id/myTasksFragment">
+
+    <fragment
+        android:id="@+id/myTasksFragment"
+        android:name="com.example.task_rapidchidori_android.ui.fragments.MyTasksFragment"
+        android:label="@string/my_tasks_head"
+        tools:layout="@layout/fragment_my_tasks">
+        <action
+            android:id="@+id/action_myTasksFragment_to_addTaskFragment"
+            app:destination="@id/addTaskFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addTaskFragment"
+        android:name="com.example.task_rapidchidori_android.ui.fragments.AddTaskFragment"
+        android:label="@string/add_task_head"
+        tools:layout="@layout/fragment_add_task" />
+</navigation>

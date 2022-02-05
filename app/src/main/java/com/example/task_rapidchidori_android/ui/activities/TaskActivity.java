@@ -11,14 +11,14 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.task_rapidchidori_android.R;
 
-public class NotesActivity extends AppCompatActivity {
+public class TaskActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notes);
+        setContentView(R.layout.activity_tasks);
 
         configViews();
     }

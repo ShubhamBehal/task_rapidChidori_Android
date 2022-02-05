@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/dp_10"
-    tools:context=".ui.fragments.AddNoteFragment">
+    tools:context=".ui.fragments.AddTaskFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_categories"
@@ -28,7 +28,23 @@
         app:layout_constraintTop_toBottomOf="@id/rv_categories"
         app:queryHint="Enter text to search here" />
 
+    <TextView
+        android:id="@+id/tv_no_tasks"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/sp_20"
+        android:text="@string/no_tasks_found"
+        android:textSize="@dimen/sp_20"
+        android:textStyle="italic"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sv_search" />
+
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_tasks"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_10"
@@ -37,7 +53,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sv_search"
         tools:itemCount="5"
-        tools:listitem="@layout/notes_child_view" />
+        tools:listitem="@layout/tasks_child_view" />
 
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -54,23 +70,23 @@
         app:backgroundTint="@color/color_fab_2"
         app:icon="@drawable/ic_add_category"
         app:iconTint="@color/white"
-        app:layout_constraintBottom_toTopOf="@id/fab_add_note"
+        app:layout_constraintBottom_toTopOf="@id/fab_add_task"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="HardcodedText" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fab_add_note"
+        android:id="@+id/fab_add_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_10"
         android:importantForAccessibility="no"
-        android:text="   Add a Note   "
+        android:text="   Add a Task   "
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:visibility="invisible"
         app:backgroundTint="@color/color_fab_1"
-        app:icon="@drawable/ic_add_note"
+        app:icon="@drawable/ic_add_task"
         app:iconTint="@color/white"
         app:layout_constraintBottom_toTopOf="@id/fab_add"
         app:layout_constraintEnd_toEndOf="parent"
