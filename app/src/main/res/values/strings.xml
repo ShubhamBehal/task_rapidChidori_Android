@@ -5,7 +5,6 @@
     <string name="my_tasks_head">My Tasks</string>
     <string name="add_task_head">Add Task</string>
     <string name="due_date_label">Select a due date</string>
-    <string name="images_label">Images</string>
     <string name="play_audio">Play Audio</string>
     <string name="delete_audio">Delete Audio</string>
     <string name="add_subtask">Add a Subtask</string>
@@ -13,7 +12,6 @@
     <string name="save_task">Save task</string>
     <string name="sort_by_date">Sort by Date</string>
     <string name="sort_by_name">Sort by Name</string>
-    <string name="sort">Sort</string>
     <string name="enter_category_hint">Enter a category name</string>
     <string name="add_category_title">Add a Category</string>
     <string name="ok">OK</string>
@@ -44,4 +42,10 @@
     <string name="cancel">Cancel</string>
     <string name="stop_audio">Stop Audio</string>
     <string name="image_delete_body">Are you sure you want to remove audio from the task ?</string>
+    <string name="attached_images_head">Attached Images:</string>
+    <string name="no_images_attached">No attached images</string>
+    <string name="no_subtasks_attached">No subtasks attached</string>
+    <string name="subtask_list_head">SubTasks Attached:</string>
+    <string name="no_audio_attached">No Audio Attached</string>
+    <string name="audio_attached">1 Audio attached with this task :</string>
 </resources>

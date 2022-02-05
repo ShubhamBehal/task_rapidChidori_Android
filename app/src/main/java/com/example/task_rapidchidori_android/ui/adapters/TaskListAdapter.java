@@ -51,13 +51,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         viewHolder.tvAddedDate.setText(String.format(viewHolder.tvAddedDate.getContext()
                 .getString(R.string.created_on), task.dateCreated));
 
-        viewHolder.cvRoot.setOnClickListener(view -> {
-            listener.onItemClick(task);
-        });
+        viewHolder.cvRoot.setOnClickListener(view -> listener.onItemClick(task));
 
-        viewHolder.ivDelete.setOnClickListener(view -> {
-            listener.onTaskDelete(task.taskID);
-        });
+        viewHolder.ivDelete.setOnClickListener(view -> listener.onTaskDelete(task.taskID));
     }
 
     @Override

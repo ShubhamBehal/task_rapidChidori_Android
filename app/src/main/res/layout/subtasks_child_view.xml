@@ -28,6 +28,8 @@
             android:id="@+id/tv_subtask_title"
             android:layout_width="120dp"
             android:layout_height="120dp"
+            android:ellipsize="end"
+            android:maxLines="4"
             android:padding="@dimen/dp_4"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20"

@@ -113,6 +113,9 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private Button btnPlayStopAudio;
     private Button btnDeleteAudio;
     private boolean isRecordingPlaying;
+    private TextView tvImageListHead;
+    private TextView tvSubtaskListHead;
+    private TextView tvAudioHead;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -142,7 +145,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                             bitmaps.add(bitmap);
                             String imageSource = ImageBitmapString.BitMapToString(bitmap);
                             imageSources.add(imageSource);
-                            imagesAdapter.setData(bitmaps);
+                            refreshImagesList();
                         }
                     }
                 });
@@ -192,6 +195,17 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                         });
     }
 
+    private void refreshImagesList() {
+        if (bitmaps.size() > 0) {
+            rvImages.setVisibility(View.VISIBLE);
+            tvImageListHead.setText(R.string.attached_images_head);
+            imagesAdapter.setData(bitmaps);
+        } else {
+            tvImageListHead.setText(R.string.no_images_attached);
+            rvImages.setVisibility(View.GONE);
+        }
+    }
+
     private void handleOnGalleryPhotoSelect(Intent data) {
         ClipData clipData = data.getClipData();
 
@@ -222,7 +236,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             }
         }
 
-        imagesAdapter.setData(bitmaps);
+        refreshImagesList();
     }
 
     @Override
@@ -255,6 +269,9 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         audioGroup = view.findViewById(R.id.grp_audio);
         btnPlayStopAudio = view.findViewById(R.id.btn_play_audio);
         btnDeleteAudio = view.findViewById(R.id.btn_delete_audio);
+        tvImageListHead = view.findViewById(R.id.tv_attached_images);
+        tvSubtaskListHead = view.findViewById(R.id.tv_attached_subtasks_head);
+        tvAudioHead = view.findViewById(R.id.tv_audio_head);
     }
 
 
@@ -477,8 +494,10 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
 
     private void setUpAudioUI() {
         if (audioFile == null) {
+            tvAudioHead.setText(R.string.no_audio_attached);
             audioGroup.setVisibility(View.GONE);
         } else {
+            tvAudioHead.setText(R.string.audio_attached);
             audioGroup.setVisibility(View.VISIBLE);
         }
     }
@@ -552,7 +571,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         subtaskList.add(etCategory.getText().toString().trim());
-                        subTaskListAdapter.setData(subtaskList);
+                        refreshSubtaskList();
                         Toast.makeText(requireActivity(),
                                 getString(R.string.subtask_added_success_msg),
                                 Toast.LENGTH_SHORT).show();
@@ -560,6 +579,17 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                 });
         builder.create();
         builder.show();
+    }
+
+    private void refreshSubtaskList() {
+        if (subtaskList.size() > 0) {
+            tvSubtaskListHead.setText(R.string.subtask_list_head);
+            rvSubtasks.setVisibility(View.VISIBLE);
+            subTaskListAdapter.setData(subtaskList);
+        } else {
+            tvSubtaskListHead.setText(R.string.no_subtasks_attached);
+            rvSubtasks.setVisibility(View.GONE);
+        }
     }
 
     private void handleOnGalleryClick() {
@@ -694,7 +724,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private void removeImage(int position) {
         bitmaps.remove(position);
         imageSources.remove(position);
-        imagesAdapter.setData(bitmaps);
+        refreshImagesList();
         Toast.makeText(requireActivity(), getString(R.string.image_removed_success), Toast.LENGTH_SHORT)
                 .show();
     }
@@ -712,7 +742,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
 
     private void removeSubtask(int position) {
         subtaskList.remove(position);
-        subTaskListAdapter.setData(subtaskList);
+        refreshSubtaskList();
         Toast.makeText(requireActivity(), getString(R.string.subtask_remove_success),
                 Toast.LENGTH_SHORT)
                 .show();

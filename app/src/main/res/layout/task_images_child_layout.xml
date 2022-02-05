@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/iv_img"
-        android:layout_width="120dp"
-        android:layout_height="150dp"
+        android:layout_width="142dp"
+        android:layout_height="160dp"
         android:importantForAccessibility="no"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

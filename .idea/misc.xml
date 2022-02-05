@@ -23,9 +23,10 @@
         <entry key="app/src/main/res/layout/activity_tasks.xml" value="0.5128968253968254" />
         <entry key="app/src/main/res/layout/add_audio_dialog_view.xml" value="0.5128968253968254" />
         <entry key="app/src/main/res/layout/add_category_dialog_view.xml" value="0.2341485507246377" />
+        <entry key="app/src/main/res/layout/asdasd.xml" value="0.5128968253968254" />
         <entry key="app/src/main/res/layout/categories_child_view.xml" value="0.23777173913043478" />
         <entry key="app/src/main/res/layout/fragment_add_note.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_add_task.xml" value="0.2529274004683841" />
+        <entry key="app/src/main/res/layout/fragment_add_task.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_my_notes.xml" value="0.45" />
         <entry key="app/src/main/res/layout/fragment_my_tasks.xml" value="0.5128968253968254" />
         <entry key="app/src/main/res/layout/notes_child_view.xml" value="0.335" />

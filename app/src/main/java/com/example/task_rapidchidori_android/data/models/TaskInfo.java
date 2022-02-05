@@ -3,9 +3,6 @@ package com.example.task_rapidchidori_android.data.models;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-
-//todo add all the required properties
-
 @Entity(tableName = "tasks")
 public class TaskInfo {
 
