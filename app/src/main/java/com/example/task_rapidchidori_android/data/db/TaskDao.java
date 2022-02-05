@@ -37,4 +37,16 @@ public interface TaskDao {
 
     @Query("SELECT * FROM subTasks WHERE taskID LIKE :taskId")
     List<SubTaskInfo> getSubtasksByTaskId(long taskId);
+
+    @Query("UPDATE tasks SET taskTitle = :taskTitle, taskDescription = :taskDescription " +
+            ", category= :category, dueDate = :dueDate, audioURIString =:audioURIString " +
+            "WHERE taskID = :taskID")
+    void updateTask(long taskID, String taskTitle, String taskDescription, String category,
+                    String dueDate, String audioURIString);
+
+    @Query("DELETE FROM images WHERE taskID LIKE :taskID")
+    void deleteImagesOfTask(long taskID);
+
+    @Query("DELETE FROM subTasks WHERE taskID LIKE :taskID")
+    void deleteSubtasksOfTask(long taskID);
 }

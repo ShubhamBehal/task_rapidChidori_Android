@@ -341,9 +341,12 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         });
 
         viewModel.getIsSaved().observe(getViewLifecycleOwner(), isSaved -> {
+            String msg = getString(R.string.task_save_success);
+            if (taskId != 0) {
+                getString(R.string.task_edit_success);
+            }
             if (isSaved) {
-                Toast.makeText(requireActivity(), getString(R.string.task_save_success),
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show();
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                         .navigateUp();
                 viewModel.resetIsSaved();
@@ -354,6 +357,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         viewModel.getImageInfo().observe(getViewLifecycleOwner(), imagesInfo -> {
             for (ImagesInfo info : imagesInfo) {
                 bitmaps.add(ImageBitmapString.StringToBitMap(info.image));
+                imageSources.add(info.image);
             }
             refreshImagesList();
         });
@@ -373,7 +377,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         tvDueDate.setText(taskInfo.dueDate);
         tvDueDate.setTextColor(ContextCompat.getColor(requireActivity(), R.color.black));
 
-        if (!taskInfo.audioURIString.trim().equalsIgnoreCase("")) {
+        if (!taskInfo.audioURIString.trim().equalsIgnoreCase("null")) {
             audioFile = Uri.parse(taskInfo.audioURIString);
             setUpAudioUI();
         }
@@ -726,19 +730,20 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     }
 
     private void handleTaskSaveClick() {
+        TaskInfo taskInfo =
+                new TaskInfo(
+                        taskId != 0 ? taskId :
+                                Calendar.getInstance().getTimeInMillis(),
+                        Objects.requireNonNull(tietTitle.getText()).toString(),
+                        Objects.requireNonNull(tietDesc.getText()).toString(),
+                        spCategories.getSelectedItem().toString(),
+                        tvDueDate.getText().toString(),
+                        DateFormat.format(DATE_TIME_FORMAT,
+                                Calendar.getInstance().getTimeInMillis()).toString(),
+                        audioFile != null ? audioFile.toString() : "null"
+                );
         if (isInputValid()) {
-            TaskInfo taskInfo =
-                    new TaskInfo(
-                            Calendar.getInstance().getTimeInMillis(),
-                            Objects.requireNonNull(tietTitle.getText()).toString(),
-                            Objects.requireNonNull(tietDesc.getText()).toString(),
-                            spCategories.getSelectedItem().toString(),
-                            tvDueDate.getText().toString(),
-                            DateFormat.format(DATE_TIME_FORMAT,
-                                    Calendar.getInstance().getTimeInMillis()).toString(),
-                            audioFile != null ? audioFile.toString() : ""
-                    );
-            viewModel.saveTaskToRepo(taskInfo, imageSources, subtaskList);
+            viewModel.saveTaskToRepo(taskInfo, imageSources, subtaskList, taskId != 0);
         }
     }
 

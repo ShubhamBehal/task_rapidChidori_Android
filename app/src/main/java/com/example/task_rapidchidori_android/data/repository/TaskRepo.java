@@ -34,13 +34,21 @@ public class TaskRepo {
         return instance;
     }
 
-    public void saveTaskToRepo(TaskInfo taskInfo, List<ImagesInfo> imageSources, List<SubTaskInfo> subTasks) {
+    public void saveTaskToRepo(TaskInfo taskInfo, List<ImagesInfo> imageSources, List<SubTaskInfo> subTasks, boolean isEdit) {
         Thread thread = new Thread() {
             @Override
             public void run() {
                 super.run();
 
-                database.taskDao().insertTask(taskInfo);
+                if (isEdit) {
+                    database.taskDao().updateTask(taskInfo.taskID, taskInfo.taskTitle, taskInfo.taskDescription,
+                            taskInfo.category, taskInfo.dueDate, taskInfo.audioURIString);
+                    database.taskDao().deleteImagesOfTask(taskInfo.taskID);
+                    database.taskDao().deleteSubtasksOfTask(taskInfo.taskID);
+                } else {
+                    database.taskDao().insertTask(taskInfo);
+                }
+
                 database.taskDao().insertImages(imageSources);
                 database.taskDao().insertSubTasks(subTasks);
 
