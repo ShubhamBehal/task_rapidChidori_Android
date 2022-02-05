@@ -11,6 +11,8 @@
         <entry key="app/src/main/res/drawable/category_selector.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/category_unselected_background.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/ic_add.xml" value="0.26197916666666665" />
+        <entry key="app/src/main/res/drawable/ic_baseline_category_24.xml" value="0.1985" />
+        <entry key="app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.222" />
         <entry key="app/src/main/res/drawable/ic_baseline_sort_by_alpha_24.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/drawable/ic_record_audio.xml" value="0.173" />
@@ -20,19 +22,23 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.23177083333333334" />
         <entry key="app/src/main/res/layout/activity_notes.xml" value="0.24094202898550723" />
         <entry key="app/src/main/res/layout/activity_splashscreen.xml" value="0.2341485507246377" />
-        <entry key="app/src/main/res/layout/activity_tasks.xml" value="0.5128968253968254" />
+        <entry key="app/src/main/res/layout/activity_tasks.xml" value="0.22" />
         <entry key="app/src/main/res/layout/add_audio_dialog_view.xml" value="0.5128968253968254" />
         <entry key="app/src/main/res/layout/add_category_dialog_view.xml" value="0.2341485507246377" />
         <entry key="app/src/main/res/layout/categories_child_view.xml" value="0.23777173913043478" />
+        <entry key="app/src/main/res/layout/edit_category_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_add_note.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_add_task.xml" value="0.2529274004683841" />
+        <entry key="app/src/main/res/layout/fragment_edit_categories.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_my_notes.xml" value="0.45" />
-        <entry key="app/src/main/res/layout/fragment_my_tasks.xml" value="0.5128968253968254" />
+        <entry key="app/src/main/res/layout/fragment_my_tasks.xml" value="0.15953307392996108" />
         <entry key="app/src/main/res/layout/notes_child_view.xml" value="0.335" />
         <entry key="app/src/main/res/layout/subtasks_child_view.xml" value="0.45" />
         <entry key="app/src/main/res/layout/task_images_child_layout.xml" value="0.23777173913043478" />
-        <entry key="app/src/main/res/layout/tasks_child_view.xml" value="0.5128968253968254" />
+        <entry key="app/src/main/res/layout/tasks_child_view.xml" value="0.1" />
         <entry key="app/src/main/res/menu/add_note_menu.xml" value="0.24583333333333332" />
+        <entry key="app/src/main/res/menu/add_task_menu.xml" value="0.190625" />
+        <entry key="app/src/main/res/menu/category_edit_menu.xml" value="0.190625" />
         <entry key="app/src/main/res/menu/main_menu.xml" value="0.24583333333333332" />
       </map>
     </option>
