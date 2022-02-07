@@ -6,8 +6,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
+import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.repository.CategoryRepo;
 import com.example.task_rapidchidori_android.data.repository.TaskRepo;
+import com.example.task_rapidchidori_android.helper.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,7 @@ public class CategoriesViewModel extends ViewModel {
     public MutableLiveData<List<CategoryInfo>> getCategoryLiveData() {
         return categoryRepo.getCategoryLiveData();
     }
+
 
     public void removeCategoryFromRepo(String selectedCategory)
     {

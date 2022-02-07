@@ -63,7 +63,7 @@ public class CategoryRepo {
             @Override
             public void run() {
                 super.run();
-                database.categoryDao().removeCategoryByCategoryID(selectedCategory);
+                database.categoryDao().removeCategory(selectedCategory);
                 categoryLiveData.postValue(database.categoryDao().getCategory(selectedCategory));
             }
         };

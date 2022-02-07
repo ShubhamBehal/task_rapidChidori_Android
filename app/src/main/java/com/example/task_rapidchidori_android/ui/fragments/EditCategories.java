@@ -3,12 +3,16 @@ package com.example.task_rapidchidori_android.ui.fragments;
 import static com.example.task_rapidchidori_android.helper.Constants.DEFAULT_CATEGORY;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -64,19 +68,12 @@ public class EditCategories extends Fragment implements View.OnClickListener, On
         cviewModel= new ViewModelProvider(this,
                 new CategoriesViewModelFactory(requireActivity().getApplication()))
                 .get(CategoriesViewModel.class);
-        setAdapter();
+
+
         cviewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::showCategoryList);
-        cviewModel.getCategoriesFromRepo();
 
 
-        rvEditCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-            }
-        });
-
+        setAdapter();
     }
 
 
@@ -86,11 +83,10 @@ public class EditCategories extends Fragment implements View.OnClickListener, On
 
     }
 
-    @Override
+
     public void onCategorySelect(String category) {
         rvEditCategory.setBackgroundColor(Color.parseColor("#b58484"));
     }
-
 
 
     private void setAdapter(){
@@ -102,6 +98,7 @@ public class EditCategories extends Fragment implements View.OnClickListener, On
         rvEditCategory.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.VERTICAL, false));
             rvEditCategory.setAdapter(ecla);
+
         }
 
 
@@ -110,18 +107,26 @@ public class EditCategories extends Fragment implements View.OnClickListener, On
         ecla.setData(categories);
     }
 
+    @Override
+    public void onCategoryDelete(String category)
+    {
+        showWarningDialog(category);
 
+       // cviewModel.getCategoriesFromRepo();
 
-   // private void showWarningDialog(int taskId) {
-     //   new AlertDialog.Builder(requireActivity())
-      //          .setTitle(R.string.delete_task_head)
-        //        .setMessage(R.string.delete_task_desc)
-        //        .setPositiveButton(R.string.yes, (dialog, which) ->
-            //            cviewModel.removeCategoryFromRepo(selectedCategory))
-         //       .setNegativeButton(R.string.no, null)
-         //       .setIcon(android.R.drawable.ic_dialog_alert)
-          //      .show();
-  //  }
+    }
+
+    private void showWarningDialog(String category) {
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(R.string.delete_cat_head)
+                .setMessage(R.string.delete_cat_desc)
+                .setPositiveButton(R.string.yes, (dialog, which) ->
+                        cviewModel.removeCategoryFromRepo(category))
+                .setNegativeButton(R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
 
 
 

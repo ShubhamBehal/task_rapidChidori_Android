@@ -15,15 +15,12 @@ public interface CategoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<CategoryInfo> categories);
 
-
-    @Query("SELECT * FROM  categories WHERE category LIKE :category")
-    List<CategoryInfo> getCategory(String category);
-
     @Query("SELECT * FROM  categories")
     List<CategoryInfo> getAllCategories();
 
-
     @Query("DELETE FROM categories WHERE category LIKE :category")
-    void removeCategoryByCategoryID(String category);
+    void removeCategory(String category);
 
+   @Query("SELECT * FROM categories WHERE category LIKE :category")
+    List<CategoryInfo> getCategory(String category);
 }

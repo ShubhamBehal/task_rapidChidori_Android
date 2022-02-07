@@ -288,6 +288,11 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
     }
 
     @Override
+    public void onCategoryDelete(String category) {
+
+    }
+
+    @Override
     public void onDetach() {
         for (CategoryInfo c : categories) {
             c.isSelected = c.category.equalsIgnoreCase(DEFAULT_CATEGORY);
