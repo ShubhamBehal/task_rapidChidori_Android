@@ -21,11 +21,36 @@ public interface TaskDao {
     List<TaskInfo> getTasks(String category);
 
     @Query("DELETE FROM tasks WHERE taskID LIKE :taskId")
-    void removeTaskByTaskId(int taskId);
+    void removeTaskByTaskId(long taskId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertImages(List<ImagesInfo> images);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertSubTasks(List<SubTaskInfo> subTasks);
+
+    @Query("SELECT * FROM tasks WHERE taskID LIKE :taskId")
+    TaskInfo getTaskByTaskId(long taskId);
+
+    @Query("SELECT * FROM images WHERE taskID LIKE :taskId")
+    List<ImagesInfo> getImagesByTaskId(long taskId);
+
+    @Query("SELECT * FROM subTasks WHERE taskID LIKE :taskId")
+    List<SubTaskInfo> getSubtasksByTaskId(long taskId);
+
+    @Query("UPDATE tasks SET taskTitle = :taskTitle, taskDescription = :taskDescription " +
+            ", category= :category, dueDate = :dueDate, audioURIString =:audioURIString " +
+            "WHERE taskID = :taskID")
+    void updateTask(long taskID, String taskTitle, String taskDescription, String category,
+                    String dueDate, String audioURIString);
+
+    @Query("DELETE FROM images WHERE taskID LIKE :taskID")
+    void deleteImagesOfTask(long taskID);
+
+    @Query("DELETE FROM subTasks WHERE taskID LIKE :taskID")
+    void deleteSubtasksOfTask(long taskID);
+
+    @Query("UPDATE tasks SET isCompleted = :isCompleted, completedDate = :completedDate" +
+            " WHERE taskID= :taskId")
+    void updateTask(long taskId, String completedDate, boolean isCompleted);
 }

@@ -1,6 +1,7 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
 import static com.example.task_rapidchidori_android.helper.Constants.DEFAULT_CATEGORY;
+import static com.example.task_rapidchidori_android.helper.Constants.TASK_ID;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -325,15 +326,19 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
     @Override
     public void onItemClick(TaskInfo taskInfo) {
-        //todo handle on task item click
+        Bundle bundle = new Bundle();
+        bundle.putLong(TASK_ID, taskInfo.taskID);
+
+        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                .navigate(R.id.action_myTasksFragment_to_addTaskFragment, bundle);
     }
 
     @Override
-    public void onTaskDelete(int taskId) {
+    public void onTaskDelete(long taskId) {
         showWarningDialog(taskId);
     }
 
-    private void showWarningDialog(int taskId) {
+    private void showWarningDialog(long taskId) {
         new AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.delete_task_head)
                 .setMessage(R.string.delete_task_desc)

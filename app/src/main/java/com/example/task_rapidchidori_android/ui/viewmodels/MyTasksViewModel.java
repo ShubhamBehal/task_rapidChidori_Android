@@ -17,7 +17,6 @@ import java.util.List;
 public class MyTasksViewModel extends ViewModel {
     private final CategoryRepo categoryRepo;
     private final TaskRepo taskRepo;
-    private SingleLiveEvent<String> demo = new SingleLiveEvent<>();
 
     public MyTasksViewModel(Application mApplication) {
         categoryRepo = CategoryRepo.getInstance(mApplication.getApplicationContext());
@@ -61,7 +60,7 @@ public class MyTasksViewModel extends ViewModel {
         return taskRepo.getTasksLiveData();
     }
 
-    public void removeTaskFromRepo(int taskId, String selectedCategory) {
+    public void removeTaskFromRepo(long taskId, String selectedCategory) {
         taskRepo.removeTaskFromRepo(taskId, selectedCategory);
     }
 }

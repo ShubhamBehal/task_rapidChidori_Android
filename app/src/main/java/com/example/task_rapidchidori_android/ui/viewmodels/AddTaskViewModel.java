@@ -11,6 +11,7 @@ import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.repository.CategoryRepo;
 import com.example.task_rapidchidori_android.data.repository.TaskRepo;
+import com.example.task_rapidchidori_android.helper.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,8 @@ public class AddTaskViewModel extends ViewModel {
         return categoryNames;
     }
 
-    public void saveTaskToRepo(TaskInfo taskInfo, ArrayList<String> imageSources, ArrayList<String> subtaskList) {
+    public void saveTaskToRepo(TaskInfo taskInfo, ArrayList<String> imageSources,
+                               ArrayList<String> subtaskList, boolean isEdit) {
         List<ImagesInfo> imagesInfoList = new ArrayList<>();
         List<SubTaskInfo> subTaskInfoList = new ArrayList<>();
         for (String imageSource : imageSources) {
@@ -49,8 +51,7 @@ public class AddTaskViewModel extends ViewModel {
         for (String subtask : subtaskList) {
             subTaskInfoList.add(new SubTaskInfo(taskInfo.taskID, subtask));
         }
-
-        taskRepo.saveTaskToRepo(taskInfo, imagesInfoList, subTaskInfoList);
+        taskRepo.saveTaskToRepo(taskInfo, imagesInfoList, subTaskInfoList, isEdit);
     }
 
     public MutableLiveData<Boolean> getIsSaved() {
@@ -59,5 +60,33 @@ public class AddTaskViewModel extends ViewModel {
 
     public void resetIsSaved() {
         taskRepo.getIsSaved().postValue(false);
+    }
+
+    public void getDataFromRepo(long taskId) {
+        taskRepo.getDataByTaskId(taskId);
+    }
+
+    public SingleLiveEvent<TaskInfo> getTaskInfo() {
+        return taskRepo.getTaskInfoSingleLiveEvent();
+    }
+
+    public SingleLiveEvent<List<ImagesInfo>> getImageInfo() {
+        return taskRepo.getImagesInfoSingleLiveEvent();
+    }
+
+    public SingleLiveEvent<List<SubTaskInfo>> getSubTaskInfo() {
+        return taskRepo.getSubtasksInfoSingleLiveEvent();
+    }
+
+    public void markTaskComplete(long taskId) {
+        taskRepo.markTaskComplete(taskId);
+    }
+
+    public MutableLiveData<Boolean> isCompleted() {
+        return taskRepo.getIsCompleted();
+    }
+
+    public void resetIsCompleted() {
+        taskRepo.getIsCompleted().postValue(false);
     }
 }
