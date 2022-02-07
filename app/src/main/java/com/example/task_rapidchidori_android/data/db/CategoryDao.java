@@ -21,6 +21,4 @@ public interface CategoryDao {
     @Query("DELETE FROM categories WHERE category LIKE :category")
     void removeCategory(String category);
 
-   @Query("SELECT * FROM categories WHERE category LIKE :category")
-    List<CategoryInfo> getCategory(String category);
 }

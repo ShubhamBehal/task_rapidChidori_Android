@@ -5,7 +5,6 @@ import static com.example.task_rapidchidori_android.helper.Constants.TASK_ID;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -286,11 +285,6 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
         this.selectedCategory = category;
         viewModel.getTasksFromRepo(category);
-    }
-
-    @Override
-    public void onCategoryDelete(String category) {
-
     }
 
     @Override

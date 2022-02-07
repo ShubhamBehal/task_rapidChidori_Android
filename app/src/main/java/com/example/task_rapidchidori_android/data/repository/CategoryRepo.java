@@ -64,7 +64,8 @@ public class CategoryRepo {
             public void run() {
                 super.run();
                 database.categoryDao().removeCategory(selectedCategory);
-                categoryLiveData.postValue(database.categoryDao().getCategory(selectedCategory));
+                database.taskDao().removeTaskByCategories(selectedCategory);
+                categoryLiveData.postValue(database.categoryDao().getAllCategories());
             }
         };
         thread.start();

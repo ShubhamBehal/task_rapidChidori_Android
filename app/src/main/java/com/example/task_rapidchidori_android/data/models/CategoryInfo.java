@@ -10,9 +10,12 @@ public class CategoryInfo {
     @NonNull
     public String category;
 
+    public boolean isDefaultCategory;
+
     public boolean isSelected;
 
-    public CategoryInfo(@NonNull String category) {
+    public CategoryInfo(@NonNull String category, boolean isDefaultCategory) {
         this.category = category;
+        this.isDefaultCategory = isDefaultCategory;
     }
 }

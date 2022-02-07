@@ -25,12 +25,12 @@ public class MyTasksViewModel extends ViewModel {
 
     public void addDefaultCategories() {
         List<CategoryInfo> categories = new ArrayList<>();
-        CategoryInfo work = new CategoryInfo("Work");
+        CategoryInfo work = new CategoryInfo("Work", true);
         work.isSelected = true;
         categories.add(work);
-        categories.add(new CategoryInfo("School"));
-        categories.add(new CategoryInfo("Shopping"));
-        categories.add(new CategoryInfo("Groceries"));
+        categories.add(new CategoryInfo("School", true));
+        categories.add(new CategoryInfo("Shopping", true));
+        categories.add(new CategoryInfo("Groceries", true));
         categoryRepo.addCategoriesToRepo(categories);
     }
 
@@ -48,7 +48,7 @@ public class MyTasksViewModel extends ViewModel {
 
     public void addCategoryToRepo(String category) {
         List<CategoryInfo> categories = new ArrayList<>();
-        categories.add(new CategoryInfo(category));
+        categories.add(new CategoryInfo(category, false));
         categoryRepo.addCategoriesToRepo(categories);
     }
 
