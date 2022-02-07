@@ -1,6 +1,7 @@
 package com.example.task_rapidchidori_android.ui.adapters;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.ui.interfaces.OnCategorySelect;
 
 import java.util.List;
+import java.util.Locale;
 
 public class EditCategoriesListAdapter extends RecyclerView.Adapter<EditCategoriesListAdapter.Viewholder> {
 
@@ -57,10 +59,13 @@ public class EditCategoriesListAdapter extends RecyclerView.Adapter<EditCategori
        // holder.clEdit.setSelected(isSelected);
         holder.tvEditCategory.setText(category);
     //   holder.clEdit.setOnClickListener(view -> listener.onCategorySelect(category));
+
+
         holder.ivDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+               // onCategoryDelete(category);
             }
         });
 

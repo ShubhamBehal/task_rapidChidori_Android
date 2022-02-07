@@ -30,6 +30,11 @@ public class CategoriesViewModel extends ViewModel {
         return categoryRepo.getCategoryLiveData();
     }
 
+    public void removeCategoryFromRepo(String selectedCategory)
+    {
+        categoryRepo.removeCategoryFromRepo(selectedCategory);
+    }
+
     public List<String> getCategoryNameList(List<CategoryInfo> categoryInfos) {
         List<String> categoryNames = new ArrayList<>();
         for (CategoryInfo categoryInfo : categoryInfos) {

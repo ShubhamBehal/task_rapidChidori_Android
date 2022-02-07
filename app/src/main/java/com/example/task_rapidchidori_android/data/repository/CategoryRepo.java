@@ -52,7 +52,21 @@ public class CategoryRepo {
         thread.start();
     }
 
+
     public MutableLiveData<List<CategoryInfo>> getCategoryLiveData() {
         return categoryLiveData;
+    }
+
+
+    public void removeCategoryFromRepo(String selectedCategory) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                database.categoryDao().removeCategoryByCategoryID(selectedCategory);
+                categoryLiveData.postValue(database.categoryDao().getCategory(selectedCategory));
+            }
+        };
+        thread.start();
     }
 }

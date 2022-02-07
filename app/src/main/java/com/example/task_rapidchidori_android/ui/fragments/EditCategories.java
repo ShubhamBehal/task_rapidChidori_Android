@@ -2,6 +2,8 @@ package com.example.task_rapidchidori_android.ui.fragments;
 
 import static com.example.task_rapidchidori_android.helper.Constants.DEFAULT_CATEGORY;
 
+import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,12 +39,11 @@ public class EditCategories extends Fragment implements View.OnClickListener, On
     private EditCategoriesListAdapter ecla;
     RecyclerView rvEditCategory;
     public CategoriesViewModel cviewModel;
-    private String selectedCategory = DEFAULT_CATEGORY;
+    //private String selectedCategory = DEFAULT_CATEGORY;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
 
@@ -52,12 +53,6 @@ public class EditCategories extends Fragment implements View.OnClickListener, On
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_categories, container, false);
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        SharedPrefsUtil.getInstance().setAlreadyLaunched(requireActivity(), true);
     }
 
 
@@ -73,27 +68,30 @@ public class EditCategories extends Fragment implements View.OnClickListener, On
         cviewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::showCategoryList);
         cviewModel.getCategoriesFromRepo();
 
+
+        rvEditCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
+
     }
+
+
 
     @Override
     public void onClick(View v) {
 
-
     }
+
     @Override
     public void onCategorySelect(String category) {
-     //   for (CategoryInfo c : categories) {
-   //         c.isSelected = c.category.equalsIgnoreCase(category);
-     //   }
-    //    EditCategoriesListAdapter.setData(categories);
-   //     cviewModel.addCategoryToRepo(categories);
-
-     //   this.selectedCategory = category;
-     //  cviewModel.getTasksFromRepo(category);
-
-
-
+        rvEditCategory.setBackgroundColor(Color.parseColor("#b58484"));
     }
+
+
 
     private void setAdapter(){
         if (categories == null)
@@ -111,6 +109,21 @@ public class EditCategories extends Fragment implements View.OnClickListener, On
         this.categories = categories;
         ecla.setData(categories);
     }
+
+
+
+   // private void showWarningDialog(int taskId) {
+     //   new AlertDialog.Builder(requireActivity())
+      //          .setTitle(R.string.delete_task_head)
+        //        .setMessage(R.string.delete_task_desc)
+        //        .setPositiveButton(R.string.yes, (dialog, which) ->
+            //            cviewModel.removeCategoryFromRepo(selectedCategory))
+         //       .setNegativeButton(R.string.no, null)
+         //       .setIcon(android.R.drawable.ic_dialog_alert)
+          //      .show();
+  //  }
+
+
 
     }
 
