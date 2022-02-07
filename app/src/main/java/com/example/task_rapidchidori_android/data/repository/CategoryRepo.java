@@ -14,6 +14,7 @@ public class CategoryRepo {
     private static CategoryRepo instance;
     private final TaskDB database;
     private final MutableLiveData<List<CategoryInfo>> categoryLiveData = new MutableLiveData<>();
+
     private CategoryRepo(TaskDB database) {
         this.database = database;
     }
@@ -58,13 +59,18 @@ public class CategoryRepo {
     }
 
 
-    public void removeCategoryFromRepo(String selectedCategory) {
+    public void removeCategoryFromRepo(CategoryInfo selectedCategory) {
         Thread thread = new Thread() {
             @Override
             public void run() {
                 super.run();
-                database.categoryDao().removeCategory(selectedCategory);
-                database.taskDao().removeTaskByCategories(selectedCategory);
+                database.categoryDao().removeCategory(selectedCategory.category);
+                database.taskDao().removeTaskByCategories(selectedCategory.category);
+
+
+                if (selectedCategory.isSelected) {
+                    database.taskDao().upDateSelectedCategory("Work");
+                }
                 categoryLiveData.postValue(database.categoryDao().getAllCategories());
             }
         };

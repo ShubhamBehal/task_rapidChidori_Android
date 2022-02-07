@@ -56,4 +56,7 @@ public interface TaskDao {
 
     @Query("DELETE FROM tasks WHERE category =:category")
     void removeTaskByCategories(String category);
+
+    @Query("UPDATE categories SET isSelected = 1 WHERE category = :categoryName")
+    void upDateSelectedCategory(String categoryName);
 }

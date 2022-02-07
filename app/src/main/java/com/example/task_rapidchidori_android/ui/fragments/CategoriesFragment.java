@@ -81,11 +81,11 @@ public class CategoriesFragment extends Fragment implements OnCategoriesEditDele
     }
 
     @Override
-    public void onCategoryDelete(String category) {
+    public void onCategoryDelete(CategoryInfo category) {
         showWarningDialog(category);
     }
 
-    private void showWarningDialog(String category) {
+    private void showWarningDialog(CategoryInfo category) {
         new AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.delete_cat_head)
                 .setMessage(R.string.delete_cat_desc)

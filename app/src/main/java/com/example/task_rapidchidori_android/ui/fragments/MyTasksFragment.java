@@ -96,14 +96,6 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
         //getting all categories name saved in room db
         viewModel.getCategoriesFromRepo();
-
-        //getting all saved tasks from repository of a particular repository
-        for (CategoryInfo category : categories) {
-            if (category.isSelected) {
-                selectedCategory = category.category;
-            }
-        }
-        viewModel.getTasksFromRepo(selectedCategory);
     }
 
     private void initViews(View view) {
@@ -193,6 +185,15 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
     private void showCategoryList(List<CategoryInfo> categories) {
         this.categories = categories;
         categoriesListAdapter.setData(categories);
+
+        //getting all saved tasks from repository of a particular repository
+        for (CategoryInfo category : categories) {
+            if (category.isSelected) {
+                selectedCategory = category.category;
+            }
+        }
+        //getting all task from the selected category
+        viewModel.getTasksFromRepo(selectedCategory);
     }
 
     @Override
@@ -207,7 +208,6 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
             showPopup();
             fabAdd.callOnClick();
         }
-
 
 
     }
@@ -307,8 +307,7 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
             isSortByName = false;
             taskListAdapter.setData(tasks, "", false);
             return false;
-        } else if(item.getItemId() == R.id.edit_category)
-        {
+        } else if (item.getItemId() == R.id.edit_category) {
             //Toast.makeText(requireActivity(), "bhajiya", Toast.LENGTH_SHORT).show();
             Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
                     .navigate(R.id.action_myTasksFragment_to_editCategoryFragment);

@@ -49,7 +49,7 @@ public class EditCategoriesListAdapter extends RecyclerView.Adapter<EditCategori
 
         holder.tvEditCategory.setText(category.category);
 
-        holder.ivDelete.setOnClickListener(v -> listener.onCategoryDelete(category.category));
+        holder.ivDelete.setOnClickListener(v -> listener.onCategoryDelete(category));
 
         holder.ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
