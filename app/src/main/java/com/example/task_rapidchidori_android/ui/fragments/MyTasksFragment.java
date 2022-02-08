@@ -285,6 +285,8 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
         this.selectedCategory = category;
         viewModel.getTasksFromRepo(category);
+        svSearch.setQuery("",true);
+        svSearch.clearFocus();
     }
 
     @Override
@@ -298,7 +300,6 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (item.getItemId() == R.id.sort_by_name) {
             isSortByName = true;
             taskListAdapter.setData(tasks, "", true);
@@ -308,12 +309,9 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
             taskListAdapter.setData(tasks, "", false);
             return false;
         } else if (item.getItemId() == R.id.edit_category) {
-            //Toast.makeText(requireActivity(), "bhajiya", Toast.LENGTH_SHORT).show();
-            Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                     .navigate(R.id.action_myTasksFragment_to_editCategoryFragment);
         }
-
-
         return super.onOptionsItemSelected(item);
     }
 
