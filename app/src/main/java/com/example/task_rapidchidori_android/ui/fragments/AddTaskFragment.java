@@ -1,6 +1,7 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
 import static com.example.task_rapidchidori_android.helper.Constants.DATE_TIME_FORMAT;
+import static com.example.task_rapidchidori_android.helper.Constants.NULL;
 import static com.example.task_rapidchidori_android.helper.Constants.TASK_ID;
 
 import android.Manifest;
@@ -390,7 +391,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         tvDueDate.setText(taskInfo.dueDate);
         tvDueDate.setTextColor(ContextCompat.getColor(requireActivity(), R.color.black));
 
-        if (!taskInfo.audioURIString.trim().equalsIgnoreCase("null")) {
+        if (!taskInfo.audioURIString.trim().equalsIgnoreCase(NULL)) {
             audioFile = Uri.parse(taskInfo.audioURIString);
             setUpAudioUI();
         }

@@ -6,4 +6,5 @@ public class Constants {
     public static final String TASK_ID = "task_id";
     static final String PREFS_NAME = "default_preferences";
     static final String IS_FIRST_LAUNCH = "is_first_launch";
+    public static final String NULL = "null";
 }
