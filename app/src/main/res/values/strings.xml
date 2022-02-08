@@ -56,4 +56,6 @@
     <string name="edit_category">Edit Categories</string>
     <string name="delete_cat_head">Delete Category</string>
     <string name="delete_cat_desc">Are you sure you want to delete this category?</string>
+    <string name="edit_cat_title">Edit Category </string>
+    <string name="cat_edit_success">Category edited Successfully</string>
 </resources>

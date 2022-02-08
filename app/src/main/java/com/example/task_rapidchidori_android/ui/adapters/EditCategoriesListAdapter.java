@@ -38,7 +38,10 @@ public class EditCategoriesListAdapter extends RecyclerView.Adapter<EditCategori
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+
         CategoryInfo category = categories.get(position);
+
+
         if (category.isDefaultCategory) {
             holder.ivDelete.setVisibility(View.GONE);
             holder.ivEdit.setVisibility(View.GONE);
@@ -54,7 +57,7 @@ public class EditCategoriesListAdapter extends RecyclerView.Adapter<EditCategori
         holder.ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo handle on edit click
+                listener.onCategoryEdit(category.category);
             }
         });
     }

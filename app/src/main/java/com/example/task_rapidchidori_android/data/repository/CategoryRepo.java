@@ -76,4 +76,20 @@ public class CategoryRepo {
         };
         thread.start();
     }
-}
+
+    public void editCategoryFromRepo(String oldCategory, String selectedCategory) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                database.categoryDao().editCategory(oldCategory, selectedCategory);
+                categoryLiveData.postValue(database.categoryDao().getAllCategories());
+            }
+
+        };
+        thread.start();
+        }
+    }
+
+
+

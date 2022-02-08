@@ -2,9 +2,12 @@ package com.example.task_rapidchidori_android.ui.fragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -85,6 +88,11 @@ public class CategoriesFragment extends Fragment implements OnCategoriesEditDele
         showWarningDialog(category);
     }
 
+    @Override
+    public void onCategoryEdit(String category) {
+        showPopup(category);
+    }
+
     private void showWarningDialog(CategoryInfo category) {
         new AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.delete_cat_head)
@@ -95,6 +103,35 @@ public class CategoriesFragment extends Fragment implements OnCategoriesEditDele
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
+
+    private void showPopup(String category) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        LayoutInflater inflater = (requireActivity()).getLayoutInflater();
+        builder.setTitle(R.string.edit_cat_title);
+        builder.setCancelable(false);
+        View view = inflater.inflate(R.layout.add_category_dialog_view, null);
+        EditText etCategory = view.findViewById(R.id.et_category);
+        builder.setView(view)
+                .setPositiveButton(R.string.ok, (dialog, id) -> {
+                    if (TextUtils.isEmpty(etCategory.getText())) {
+                        Toast.makeText(requireActivity(),
+                                getString(R.string.category_name_empty_error),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        viewModel.editCategoryFromRepo(category, etCategory.getText().toString());
+                        Toast.makeText(requireActivity(),
+                                getString(R.string.cat_edit_success),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+        builder.create();
+        builder.show();
+    }
+
+
+
+
+
 }
 
 

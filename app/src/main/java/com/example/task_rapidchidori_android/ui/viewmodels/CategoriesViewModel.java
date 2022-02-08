@@ -25,4 +25,8 @@ public class CategoriesViewModel extends ViewModel {
     public void removeCategoryFromRepo(CategoryInfo selectedCategory) {
         categoryRepo.removeCategoryFromRepo(selectedCategory);
     }
+
+    public void editCategoryFromRepo(String oldCategory, String selectedCategory){
+        categoryRepo.editCategoryFromRepo(oldCategory, selectedCategory);
+    }
 }

@@ -4,4 +4,5 @@ import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 
 public interface OnCategoriesEditDeleteListener {
     void onCategoryDelete(CategoryInfo category);
+    void onCategoryEdit(String category);
 }
