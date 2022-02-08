@@ -59,4 +59,7 @@ public interface TaskDao {
 
     @Query("UPDATE categories SET isSelected = 1 WHERE category = :categoryName")
     void upDateSelectedCategory(String categoryName);
+
+    @Query("UPDATE tasks SET category = :selectedCategory WHERE category= :oldCategory")
+    void updateCategoryName(String oldCategory, String selectedCategory);
 }

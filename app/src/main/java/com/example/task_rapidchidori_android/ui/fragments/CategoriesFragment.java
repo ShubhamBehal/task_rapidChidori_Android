@@ -111,6 +111,7 @@ public class CategoriesFragment extends Fragment implements OnCategoriesEditDele
         builder.setCancelable(false);
         View view = inflater.inflate(R.layout.add_category_dialog_view, null);
         EditText etCategory = view.findViewById(R.id.et_category);
+        etCategory.setText(category);
         builder.setView(view)
                 .setPositiveButton(R.string.ok, (dialog, id) -> {
                     if (TextUtils.isEmpty(etCategory.getText())) {
@@ -127,9 +128,6 @@ public class CategoriesFragment extends Fragment implements OnCategoriesEditDele
         builder.create();
         builder.show();
     }
-
-
-
 
 
 }

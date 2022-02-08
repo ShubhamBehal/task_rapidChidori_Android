@@ -1,5 +1,7 @@
 package com.example.task_rapidchidori_android.data.repository;
 
+import static com.example.task_rapidchidori_android.helper.Constants.DEFAULT_CATEGORY;
+
 import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
@@ -69,7 +71,7 @@ public class CategoryRepo {
 
 
                 if (selectedCategory.isSelected) {
-                    database.taskDao().upDateSelectedCategory("Work");
+                    database.taskDao().upDateSelectedCategory(DEFAULT_CATEGORY);
                 }
                 categoryLiveData.postValue(database.categoryDao().getAllCategories());
             }
@@ -83,13 +85,14 @@ public class CategoryRepo {
             public void run() {
                 super.run();
                 database.categoryDao().editCategory(oldCategory, selectedCategory);
+                database.taskDao().updateCategoryName(oldCategory, selectedCategory);
                 categoryLiveData.postValue(database.categoryDao().getAllCategories());
             }
 
         };
         thread.start();
-        }
     }
+}
 
 
 
