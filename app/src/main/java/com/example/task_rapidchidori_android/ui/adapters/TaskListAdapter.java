@@ -50,6 +50,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                     ContextCompat.getColor(viewHolder.clParent.getContext(), R.color.grey_opacity));
             viewHolder.tvDueDate.setText(String.format(viewHolder.clParent.getContext()
                     .getString(R.string.completed_on), task.completedDate));
+            viewHolder.cvRoot.setOnClickListener(null);
         } else {
             viewHolder.tvDueDate.setText(String.format(viewHolder.tvDueDate.getContext()
                     .getString(R.string.due_date), task.dueDate));
