@@ -11,6 +11,8 @@
         <entry key="app/src/main/res/drawable/category_selector.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/category_unselected_background.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/ic_add.xml" value="0.26197916666666665" />
+        <entry key="app/src/main/res/drawable/ic_baseline_category_24.xml" value="0.173" />
+        <entry key="app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/ic_baseline_sort_by_alpha_24.xml" value="0.173" />
         <entry key="app/src/main/res/drawable/ic_delete.xml" value="0.26197916666666665" />
         <entry key="app/src/main/res/drawable/ic_record_audio.xml" value="0.173" />

@@ -43,7 +43,7 @@
                 android:layout_height="30dp"
                 android:layout_marginEnd="@dimen/dp_20"
                 android:importantForAccessibility="no"
-                android:src="@drawable/ic_baseline_edit_24"
+                android:src="@drawable/ic_edit"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/iv_delete_category"
                 app:layout_constraintTop_toTopOf="parent" />
