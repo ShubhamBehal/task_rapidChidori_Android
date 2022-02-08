@@ -294,10 +294,6 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                 new AddTaskViewModelFactory(requireActivity().getApplication()))
                 .get(AddTaskViewModel.class);
 
-        if (taskId != 0) {
-            btnMarkTaskComplete.setVisibility(View.VISIBLE);
-        }
-
         Objects.requireNonNull(((TaskActivity) requireActivity()).getSupportActionBar())
                 .setTitle(taskId != 0 ? R.string.edit_task_head : R.string.add_task_head);
 
@@ -360,12 +356,14 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             }
         });
 
-        viewModel.isCompleted().observe(getViewLifecycleOwner(), aBoolean -> {
-            Toast.makeText(requireActivity(), getString(R.string.marked_completed),
-                    Toast.LENGTH_SHORT).show();
-            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
-                    .navigateUp();
-            viewModel.resetIsCompleted();
+        viewModel.isCompleted().observe(getViewLifecycleOwner(), isSuccess -> {
+            if(isSuccess){
+                Toast.makeText(requireActivity(), getString(R.string.marked_completed),
+                        Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                        .navigateUp();
+                viewModel.resetIsCompleted();
+            }
         });
 
         viewModel.getTaskInfo().observe(getViewLifecycleOwner(), this::fillData);
@@ -673,9 +671,15 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             tvSubtaskListHead.setText(R.string.subtask_list_head);
             rvSubtasks.setVisibility(View.VISIBLE);
             subTaskListAdapter.setData(subtaskList);
+            btnMarkTaskComplete.setVisibility(View.GONE);
         } else {
             tvSubtaskListHead.setText(R.string.no_subtasks_attached);
             rvSubtasks.setVisibility(View.GONE);
+            if (taskId != 0) {
+                btnMarkTaskComplete.setVisibility(View.VISIBLE);
+            } else {
+                btnMarkTaskComplete.setVisibility(View.GONE);
+            }
         }
     }
 

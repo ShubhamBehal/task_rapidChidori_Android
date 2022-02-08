@@ -208,8 +208,6 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
             showPopup();
             fabAdd.callOnClick();
         }
-
-
     }
 
     private void showPopup() {
