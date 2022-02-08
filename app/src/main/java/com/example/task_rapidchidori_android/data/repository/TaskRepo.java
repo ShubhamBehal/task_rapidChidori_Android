@@ -89,7 +89,6 @@ public class TaskRepo {
             public void run() {
                 super.run();
                 database.taskDao().removeTaskByTaskId(taskId);
-
                 tasksLiveData.postValue(database.taskDao().getTasks(selectedCategory));
             }
         };

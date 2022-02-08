@@ -17,4 +17,12 @@ public interface CategoryDao {
 
     @Query("SELECT * FROM  categories")
     List<CategoryInfo> getAllCategories();
+
+    @Query("DELETE FROM categories WHERE category LIKE :category")
+    void removeCategory(String category);
+
+    @Query("UPDATE categories SET category = :categoryName WHERE category = :oldCategory")
+    void editCategory(String oldCategory, String categoryName);
+
+
 }
