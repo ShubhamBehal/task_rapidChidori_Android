@@ -29,10 +29,10 @@ import java.util.List;
 
 public class CategoriesFragment extends Fragment implements OnCategoriesEditDeleteListener {
 
+    public CategoriesViewModel viewModel;
     private List<CategoryInfo> categories;
     private EditCategoriesListAdapter adapter;
     private RecyclerView rvEditCategory;
-    public CategoriesViewModel viewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -285,7 +285,7 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
         this.selectedCategory = category;
         viewModel.getTasksFromRepo(category);
-        svSearch.setQuery("",true);
+        svSearch.setQuery("", true);
         svSearch.clearFocus();
     }
 

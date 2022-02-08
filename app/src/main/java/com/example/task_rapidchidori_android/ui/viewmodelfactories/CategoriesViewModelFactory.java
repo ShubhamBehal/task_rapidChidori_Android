@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.task_rapidchidori_android.ui.viewmodels.AddTaskViewModel;
 import com.example.task_rapidchidori_android.ui.viewmodels.CategoriesViewModel;
 
 public class CategoriesViewModelFactory implements ViewModelProvider.Factory {
