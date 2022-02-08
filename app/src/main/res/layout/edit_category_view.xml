@@ -1,65 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cl_Edit"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/dp_10">
 
     <androidx.cardview.widget.CardView
-        android:layout_marginTop="@dimen/dp_30"
-        android:id="@+id/cv_editroot"
+        android:id="@+id/cv_root"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/dp_6"
-        app:cardUseCompatPadding="false"
+        android:elevation="@dimen/dp_4"
+        app:cardCornerRadius="@dimen/dp_4"
+        app:cardElevation="@dimen/dp_4"
+        app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_10"
-            >
-            <!--android:id="@+id/cv_edit_root"-->
+            android:padding="@dimen/dp_20">
 
             <TextView
                 android:id="@+id/tv_edit_category"
-                android:layout_width="wrap_content"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_14"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:textStyle="bold"
-                tools:text="Categories"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/iv_edit_category"
-                />
+                app:layout_constraintEnd_toStartOf="@id/iv_edit_category"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Categories" />
 
-        <ImageView
-            android:id="@+id/iv_edit_category"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/ic_baseline_edit_24"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/iv_delete_category"
-            app:layout_constraintStart_toStartOf="@id/tv_edit_category"
-            android:layout_marginLeft="@dimen/dp_100"
-             />
+            <ImageView
+                android:id="@+id/iv_edit_category"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="@dimen/dp_20"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_baseline_edit_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv_delete_category"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/iv_delete_category"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/ic_delete"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginRight="@dimen/dp_20"
-            />
+            <ImageView
+                android:id="@+id/iv_delete_category"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_delete"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

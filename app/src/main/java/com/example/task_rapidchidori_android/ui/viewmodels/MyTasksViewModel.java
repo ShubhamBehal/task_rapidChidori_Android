@@ -17,7 +17,6 @@ import java.util.List;
 public class MyTasksViewModel extends ViewModel {
     private final CategoryRepo categoryRepo;
     private final TaskRepo taskRepo;
-    private SingleLiveEvent<String> demo = new SingleLiveEvent<>();
 
     public MyTasksViewModel(Application mApplication) {
         categoryRepo = CategoryRepo.getInstance(mApplication.getApplicationContext());
@@ -26,12 +25,12 @@ public class MyTasksViewModel extends ViewModel {
 
     public void addDefaultCategories() {
         List<CategoryInfo> categories = new ArrayList<>();
-        CategoryInfo work = new CategoryInfo("Work");
+        CategoryInfo work = new CategoryInfo("Work", true);
         work.isSelected = true;
         categories.add(work);
-        categories.add(new CategoryInfo("School"));
-        categories.add(new CategoryInfo("Shopping"));
-        categories.add(new CategoryInfo("Groceries"));
+        categories.add(new CategoryInfo("School", true));
+        categories.add(new CategoryInfo("Shopping", true));
+        categories.add(new CategoryInfo("Groceries", true));
         categoryRepo.addCategoriesToRepo(categories);
     }
 
@@ -49,7 +48,7 @@ public class MyTasksViewModel extends ViewModel {
 
     public void addCategoryToRepo(String category) {
         List<CategoryInfo> categories = new ArrayList<>();
-        categories.add(new CategoryInfo(category));
+        categories.add(new CategoryInfo(category, false));
         categoryRepo.addCategoriesToRepo(categories);
     }
 
@@ -61,7 +60,7 @@ public class MyTasksViewModel extends ViewModel {
         return taskRepo.getTasksLiveData();
     }
 
-    public void removeTaskFromRepo(int taskId, String selectedCategory) {
+    public void removeTaskFromRepo(long taskId, String selectedCategory) {
         taskRepo.removeTaskFromRepo(taskId, selectedCategory);
     }
 }

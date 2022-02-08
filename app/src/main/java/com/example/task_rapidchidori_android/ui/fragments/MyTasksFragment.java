@@ -1,10 +1,10 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
 import static com.example.task_rapidchidori_android.helper.Constants.DEFAULT_CATEGORY;
+import static com.example.task_rapidchidori_android.helper.Constants.TASK_ID;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -96,14 +96,6 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
         //getting all categories name saved in room db
         viewModel.getCategoriesFromRepo();
-
-        //getting all saved tasks from repository of a particular repository
-        for (CategoryInfo category : categories) {
-            if (category.isSelected) {
-                selectedCategory = category.category;
-            }
-        }
-        viewModel.getTasksFromRepo(selectedCategory);
     }
 
     private void initViews(View view) {
@@ -193,6 +185,15 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
     private void showCategoryList(List<CategoryInfo> categories) {
         this.categories = categories;
         categoriesListAdapter.setData(categories);
+
+        //getting all saved tasks from repository of a particular repository
+        for (CategoryInfo category : categories) {
+            if (category.isSelected) {
+                selectedCategory = category.category;
+            }
+        }
+        //getting all task from the selected category
+        viewModel.getTasksFromRepo(selectedCategory);
     }
 
     @Override
@@ -207,7 +208,6 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
             showPopup();
             fabAdd.callOnClick();
         }
-
 
 
     }
@@ -307,8 +307,7 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
             isSortByName = false;
             taskListAdapter.setData(tasks, "", false);
             return false;
-        } else if(item.getItemId() == R.id.edit_category)
-        {
+        } else if (item.getItemId() == R.id.edit_category) {
             //Toast.makeText(requireActivity(), "bhajiya", Toast.LENGTH_SHORT).show();
             Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
                     .navigate(R.id.action_myTasksFragment_to_editCategoryFragment);
@@ -320,15 +319,19 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
 
     @Override
     public void onItemClick(TaskInfo taskInfo) {
-        //todo handle on task item click
+        Bundle bundle = new Bundle();
+        bundle.putLong(TASK_ID, taskInfo.taskID);
+
+        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                .navigate(R.id.action_myTasksFragment_to_addTaskFragment, bundle);
     }
 
     @Override
-    public void onTaskDelete(int taskId) {
+    public void onTaskDelete(long taskId) {
         showWarningDialog(taskId);
     }
 
-    private void showWarningDialog(int taskId) {
+    private void showWarningDialog(long taskId) {
         new AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.delete_task_head)
                 .setMessage(R.string.delete_task_desc)

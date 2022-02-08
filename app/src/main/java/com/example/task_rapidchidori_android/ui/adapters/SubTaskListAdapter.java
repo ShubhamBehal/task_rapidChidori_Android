@@ -37,7 +37,11 @@ public class SubTaskListAdapter extends RecyclerView.Adapter<SubTaskListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int position) {
         viewHolder.tvSubTaskTitle.setText(subTasks.get(position));
-        viewHolder.rbDone.setOnClickListener(view -> listener.onSubTaskComplete(position));
+        viewHolder.rbDone.setOnClickListener(view -> {
+            listener.onSubTaskComplete(position);
+            viewHolder.rbDone.setChecked(false);
+        });
+
     }
 
     @Override

@@ -72,6 +72,8 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/grey_border_background"
                 android:dropDownVerticalOffset="?attr/dropdownListPreferredItemHeight"
+                android:importantForAccessibility="no"
+                android:paddingStart="@dimen/dp_4"
                 android:paddingEnd="@dimen/dp_10"
                 android:popupBackground="@android:color/white"
                 android:popupElevation="@dimen/dp_3"
@@ -105,16 +107,41 @@
                 app:layout_constraintTop_toBottomOf="@id/sp_categories"
                 tools:ignore="RtlSymmetry" />
 
+            <TextView
+                android:id="@+id/tv_attached_images"
+                style="@style/TextAppearance.AppCompat.Body2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_40"
+                android:text="@string/no_images_attached"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_due_date" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_images"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_10"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_due_date"
+                app:layout_constraintTop_toBottomOf="@id/tv_attached_images"
                 tools:itemCount="1"
                 tools:listitem="@layout/task_images_child_layout" />
+
+            <TextView
+                android:id="@+id/tv_audio_head"
+                style="@style/TextAppearance.AppCompat.Body2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_40"
+                android:text="@string/no_audio_attached"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rv_images" />
 
             <Button
                 android:id="@+id/btn_play_audio"
@@ -126,7 +153,7 @@
                 android:textAllCaps="false"
                 app:layout_constraintEnd_toStartOf="@id/btn_delete_audio"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_images" />
+                app:layout_constraintTop_toBottomOf="@id/tv_audio_head" />
 
             <Button
                 android:id="@+id/btn_delete_audio"
@@ -146,15 +173,27 @@
                 android:visibility="gone"
                 app:constraint_referenced_ids="btn_delete_audio,btn_play_audio" />
 
+            <TextView
+                android:id="@+id/tv_attached_subtasks_head"
+                style="@style/TextAppearance.AppCompat.Body2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_40"
+                android:text="@string/no_subtasks_attached"
+                android:textStyle="italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btn_play_audio" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_subtasks"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_40"
-                android:visibility="visible"
+                android:layout_marginTop="@dimen/dp_10"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btn_play_audio"
+                app:layout_constraintTop_toBottomOf="@id/tv_attached_subtasks_head"
                 tools:itemCount="1"
                 tools:listitem="@layout/subtasks_child_view" />
 
@@ -162,8 +201,7 @@
                 android:id="@+id/btn_add_subtask"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_6"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_20"
                 android:paddingVertical="@dimen/dp_10"
                 android:text="@string/add_subtask"
                 android:textAllCaps="false"
@@ -175,8 +213,7 @@
                 android:id="@+id/btn_mark_complete"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_6"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_20"
                 android:paddingVertical="@dimen/dp_10"
                 android:text="@string/mark_completed"
                 android:textAllCaps="false"

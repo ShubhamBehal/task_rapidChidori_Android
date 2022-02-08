@@ -4,102 +4,86 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
-import com.example.task_rapidchidori_android.ui.interfaces.OnCategorySelect;
+import com.example.task_rapidchidori_android.ui.interfaces.OnCategoriesEditDeleteListener;
 
 import java.util.List;
 
-public class EditCategoriesListAdapter extends RecyclerView.Adapter<EditCategoriesListAdapter.Viewholder> {
+public class EditCategoriesListAdapter extends RecyclerView.Adapter<EditCategoriesListAdapter.ViewHolder> {
 
     private final List<CategoryInfo> categories;
-    private final OnCategorySelect listener;
+    private final OnCategoriesEditDeleteListener listener;
 
-    public EditCategoriesListAdapter(List<CategoryInfo> categories, OnCategorySelect listener) {
+    public EditCategoriesListAdapter(List<CategoryInfo> categories, OnCategoriesEditDeleteListener listener) {
         this.categories = categories;
         this.listener = listener;
     }
 
-
     @NonNull
     @Override
-    public EditCategoriesListAdapter.Viewholder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.edit_category_view, parent, false);
 
-        return new Viewholder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Viewholder holder, final int position)
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
 
-    {
+        CategoryInfo category = categories.get(position);
 
-        String category = categories.get(position).category;
-        boolean isSelected = categories.get(position).isSelected;
-        if (isSelected) {
-            holder.tvEditCategory
-                    .setTextColor(ContextCompat.getColor(holder.tvEditCategory.getContext(),
-                            R.color.purple_700));
+
+        if (category.isDefaultCategory) {
+            holder.ivDelete.setVisibility(View.GONE);
+            holder.ivEdit.setVisibility(View.GONE);
         } else {
-            holder.tvEditCategory
-                    .setTextColor(ContextCompat.getColor(holder.tvEditCategory.getContext(),
-                            R.color.black));
+            holder.ivDelete.setVisibility(View.VISIBLE);
+            holder.ivEdit.setVisibility(View.VISIBLE);
         }
-       // holder.clEdit.setSelected(isSelected);
-        holder.tvEditCategory.setText(category);
-    //   holder.clEdit.setOnClickListener(view -> listener.onCategorySelect(category));
-        holder.ivDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
+        holder.tvEditCategory.setText(category.category);
 
+        holder.ivDelete.setOnClickListener(v -> listener.onCategoryDelete(category));
 
         holder.ivEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                listener.onCategoryEdit(category.category);
             }
         });
-
     }
-
 
     @Override
     public int getItemCount() {
         return categories.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(List<CategoryInfo> categories) {
         this.categories.clear();
         this.categories.addAll(categories);
         notifyDataSetChanged();
     }
 
-    public class Viewholder extends RecyclerView.ViewHolder{
-        TextView tvEditCategory;
-        ImageView ivDelete,ivEdit;
-       // ConstraintLayout clEdit;
-        public Viewholder(@NonNull View itemView) {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvEditCategory;
+        private final ImageView ivDelete;
+        private final ImageView ivEdit;
 
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvEditCategory = itemView.findViewById(R.id.tv_edit_category);
             ivDelete = itemView.findViewById(R.id.iv_delete_category);
             ivEdit = itemView.findViewById(R.id.iv_edit_category);
-           // clEdit = itemView.findViewById(R.id.cv_edit_root);
-
         }
     }
 }

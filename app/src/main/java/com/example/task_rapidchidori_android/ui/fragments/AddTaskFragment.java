@@ -1,6 +1,7 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
 import static com.example.task_rapidchidori_android.helper.Constants.DATE_TIME_FORMAT;
+import static com.example.task_rapidchidori_android.helper.Constants.TASK_ID;
 
 import android.Manifest;
 import android.app.Activity;
@@ -51,8 +52,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
+import com.example.task_rapidchidori_android.data.models.ImagesInfo;
+import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.typeconverters.ImageBitmapString;
+import com.example.task_rapidchidori_android.ui.activities.TaskActivity;
 import com.example.task_rapidchidori_android.ui.adapters.ImagesAdapter;
 import com.example.task_rapidchidori_android.ui.adapters.SubTaskListAdapter;
 import com.example.task_rapidchidori_android.ui.interfaces.ImagesClickListener;
@@ -113,6 +117,11 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private Button btnPlayStopAudio;
     private Button btnDeleteAudio;
     private boolean isRecordingPlaying;
+    private TextView tvImageListHead;
+    private TextView tvSubtaskListHead;
+    private TextView tvAudioHead;
+    private long taskId;
+    private Button btnMarkTaskComplete;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -142,7 +151,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                             bitmaps.add(bitmap);
                             String imageSource = ImageBitmapString.BitMapToString(bitmap);
                             imageSources.add(imageSource);
-                            imagesAdapter.setData(bitmaps);
+                            refreshImagesList();
                         }
                     }
                 });
@@ -192,6 +201,17 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                         });
     }
 
+    private void refreshImagesList() {
+        if (bitmaps.size() > 0) {
+            rvImages.setVisibility(View.VISIBLE);
+            tvImageListHead.setText(R.string.attached_images_head);
+            imagesAdapter.setData(bitmaps);
+        } else {
+            tvImageListHead.setText(R.string.no_images_attached);
+            rvImages.setVisibility(View.GONE);
+        }
+    }
+
     private void handleOnGalleryPhotoSelect(Intent data) {
         ClipData clipData = data.getClipData();
 
@@ -222,7 +242,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             }
         }
 
-        imagesAdapter.setData(bitmaps);
+        refreshImagesList();
     }
 
     @Override
@@ -234,10 +254,17 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getArgumentData();
         initViews(view);
         configViews();
         viewModel.getCategoriesFromRepo();
         setUpListeners();
+    }
+
+    private void getArgumentData() {
+        if (getArguments() != null) {
+            taskId = getArguments().getLong(TASK_ID, 0);
+        }
     }
 
     private void initViews(View view) {
@@ -255,6 +282,10 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         audioGroup = view.findViewById(R.id.grp_audio);
         btnPlayStopAudio = view.findViewById(R.id.btn_play_audio);
         btnDeleteAudio = view.findViewById(R.id.btn_delete_audio);
+        tvImageListHead = view.findViewById(R.id.tv_attached_images);
+        tvSubtaskListHead = view.findViewById(R.id.tv_attached_subtasks_head);
+        tvAudioHead = view.findViewById(R.id.tv_audio_head);
+        btnMarkTaskComplete = view.findViewById(R.id.btn_mark_complete);
     }
 
 
@@ -262,6 +293,13 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         viewModel = new ViewModelProvider(this,
                 new AddTaskViewModelFactory(requireActivity().getApplication()))
                 .get(AddTaskViewModel.class);
+
+        if (taskId != 0) {
+            btnMarkTaskComplete.setVisibility(View.VISIBLE);
+        }
+
+        Objects.requireNonNull(((TaskActivity) requireActivity()).getSupportActionBar())
+                .setTitle(taskId != 0 ? R.string.edit_task_head : R.string.add_task_head);
 
         animOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         animClose = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);
@@ -277,6 +315,15 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         rvSubtasks.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         rvSubtasks.setAdapter(subTaskListAdapter);
+
+        //edit task case
+        if (taskId != 0) {
+            getDataFromRepoAndFill();
+        }
+    }
+
+    private void getDataFromRepoAndFill() {
+        viewModel.getDataFromRepo(taskId);
     }
 
 
@@ -289,6 +336,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         btnAddSubtask.setOnClickListener(this);
         btnPlayStopAudio.setOnClickListener(this);
         btnDeleteAudio.setOnClickListener(this);
+        btnMarkTaskComplete.setOnClickListener(this);
 
         viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::setUpSpinner);
 
@@ -300,14 +348,54 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         });
 
         viewModel.getIsSaved().observe(getViewLifecycleOwner(), isSaved -> {
+            String msg = getString(R.string.task_save_success);
+            if (taskId != 0) {
+                getString(R.string.task_edit_success);
+            }
             if (isSaved) {
-                Toast.makeText(requireActivity(), getString(R.string.task_save_success),
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireActivity(), msg, Toast.LENGTH_SHORT).show();
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                         .navigateUp();
                 viewModel.resetIsSaved();
             }
         });
+
+        viewModel.isCompleted().observe(getViewLifecycleOwner(), aBoolean -> {
+            Toast.makeText(requireActivity(), getString(R.string.marked_completed),
+                    Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                    .navigateUp();
+            viewModel.resetIsCompleted();
+        });
+
+        viewModel.getTaskInfo().observe(getViewLifecycleOwner(), this::fillData);
+        viewModel.getImageInfo().observe(getViewLifecycleOwner(), imagesInfo -> {
+            for (ImagesInfo info : imagesInfo) {
+                bitmaps.add(ImageBitmapString.StringToBitMap(info.image));
+                imageSources.add(info.image);
+            }
+            refreshImagesList();
+        });
+
+        viewModel.getSubTaskInfo().observe(getViewLifecycleOwner(), subTaskInfos -> {
+            for (SubTaskInfo subTaskInfo : subTaskInfos) {
+                subtaskList.add(subTaskInfo.subTaskTitle);
+            }
+            refreshSubtaskList();
+        });
+    }
+
+    private void fillData(TaskInfo taskInfo) {
+        tietTitle.setText(taskInfo.taskTitle);
+        tietDesc.setText(taskInfo.taskDescription);
+        spCategories.setSelection(getIndex(spCategories, taskInfo.category));
+        tvDueDate.setText(taskInfo.dueDate);
+        tvDueDate.setTextColor(ContextCompat.getColor(requireActivity(), R.color.black));
+
+        if (!taskInfo.audioURIString.trim().equalsIgnoreCase("null")) {
+            audioFile = Uri.parse(taskInfo.audioURIString);
+            setUpAudioUI();
+        }
     }
 
     private void setUpSpinner(List<CategoryInfo> categoryInfos) {
@@ -344,7 +432,23 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             startStopAudio();
         } else if (view.getId() == R.id.btn_delete_audio) {
             showDeleteAudioWarningDialog();
+        } else if (view.getId() == R.id.btn_mark_complete) {
+            showCompleteWarningDialog();
         }
+    }
+
+    private void showCompleteWarningDialog() {
+        new AlertDialog.Builder(requireActivity())
+                .setTitle(R.string.subtask_complete_head)
+                .setMessage(R.string.task_complete_msg)
+                .setPositiveButton(R.string.yes, (dialog, which) -> markTaskComplete())
+                .setNegativeButton(R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void markTaskComplete() {
+        viewModel.markTaskComplete(taskId);
     }
 
     private void showDeleteAudioWarningDialog() {
@@ -477,8 +581,10 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
 
     private void setUpAudioUI() {
         if (audioFile == null) {
+            tvAudioHead.setText(R.string.no_audio_attached);
             audioGroup.setVisibility(View.GONE);
         } else {
+            tvAudioHead.setText(R.string.audio_attached);
             audioGroup.setVisibility(View.VISIBLE);
         }
     }
@@ -552,7 +658,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         subtaskList.add(etCategory.getText().toString().trim());
-                        subTaskListAdapter.setData(subtaskList);
+                        refreshSubtaskList();
                         Toast.makeText(requireActivity(),
                                 getString(R.string.subtask_added_success_msg),
                                 Toast.LENGTH_SHORT).show();
@@ -560,6 +666,17 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                 });
         builder.create();
         builder.show();
+    }
+
+    private void refreshSubtaskList() {
+        if (subtaskList.size() > 0) {
+            tvSubtaskListHead.setText(R.string.subtask_list_head);
+            rvSubtasks.setVisibility(View.VISIBLE);
+            subTaskListAdapter.setData(subtaskList);
+        } else {
+            tvSubtaskListHead.setText(R.string.no_subtasks_attached);
+            rvSubtasks.setVisibility(View.GONE);
+        }
     }
 
     private void handleOnGalleryClick() {
@@ -644,17 +761,20 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     }
 
     private void handleTaskSaveClick() {
+        TaskInfo taskInfo =
+                new TaskInfo(
+                        taskId != 0 ? taskId :
+                                Calendar.getInstance().getTimeInMillis(),
+                        Objects.requireNonNull(tietTitle.getText()).toString(),
+                        Objects.requireNonNull(tietDesc.getText()).toString(),
+                        spCategories.getSelectedItem().toString(),
+                        tvDueDate.getText().toString(),
+                        DateFormat.format(DATE_TIME_FORMAT,
+                                Calendar.getInstance().getTimeInMillis()).toString(),
+                        audioFile != null ? audioFile.toString() : "null"
+                );
         if (isInputValid()) {
-            TaskInfo taskInfo =
-                    new TaskInfo(Objects.requireNonNull(tietTitle.getText()).toString(),
-                            Objects.requireNonNull(tietDesc.getText()).toString(),
-                            spCategories.getSelectedItem().toString(),
-                            tvDueDate.getText().toString(),
-                            DateFormat.format(DATE_TIME_FORMAT,
-                                    Calendar.getInstance().getTimeInMillis()).toString(),
-                            audioFile != null ? audioFile.toString() : ""
-                    );
-            viewModel.saveTaskToRepo(taskInfo, imageSources, subtaskList);
+            viewModel.saveTaskToRepo(taskInfo, imageSources, subtaskList, taskId != 0);
         }
     }
 
@@ -694,7 +814,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private void removeImage(int position) {
         bitmaps.remove(position);
         imageSources.remove(position);
-        imagesAdapter.setData(bitmaps);
+        refreshImagesList();
         Toast.makeText(requireActivity(), getString(R.string.image_removed_success), Toast.LENGTH_SHORT)
                 .show();
     }
@@ -712,9 +832,19 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
 
     private void removeSubtask(int position) {
         subtaskList.remove(position);
-        subTaskListAdapter.setData(subtaskList);
+        refreshSubtaskList();
         Toast.makeText(requireActivity(), getString(R.string.subtask_remove_success),
                 Toast.LENGTH_SHORT)
                 .show();
+    }
+
+    private int getIndex(Spinner spinner, String myString) {
+        for (int i = 0; i < spinner.getCount(); i++) {
+            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
+                return i;
+            }
+        }
+
+        return 0;
     }
 }
