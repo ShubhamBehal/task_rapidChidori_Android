@@ -11,9 +11,9 @@ import java.io.ByteArrayOutputStream;
 public class ImageBitmapString {
     @TypeConverter
     public static String BitMapToString(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] b = stream.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
 

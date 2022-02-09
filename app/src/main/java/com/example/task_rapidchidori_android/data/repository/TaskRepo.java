@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 public class TaskRepo {
 
-    private static TaskRepo instance;
     private final TaskDB database;
     private final MutableLiveData<Boolean> isSaved = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isCompleted = new MutableLiveData<>();
