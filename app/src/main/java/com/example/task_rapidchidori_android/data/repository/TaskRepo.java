@@ -2,7 +2,6 @@ package com.example.task_rapidchidori_android.data.repository;
 
 import static com.example.task_rapidchidori_android.helper.Constants.DATE_TIME_FORMAT;
 
-import android.content.Context;
 import android.text.format.DateFormat;
 
 import androidx.lifecycle.MutableLiveData;
@@ -17,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class TaskRepo {
 
     private static TaskRepo instance;
@@ -28,16 +29,9 @@ public class TaskRepo {
     private final SingleLiveEvent<List<ImagesInfo>> imagesInfoSingleLiveEvent = new SingleLiveEvent<>();
     private final SingleLiveEvent<List<SubTaskInfo>> subtasksInfoSingleLiveEvent = new SingleLiveEvent<>();
 
-    private TaskRepo(TaskDB database) {
+    @Inject
+    TaskRepo(TaskDB database) {
         this.database = database;
-    }
-
-    public static TaskRepo getInstance(Context context) {
-        if (instance == null) {
-            instance = new TaskRepo(
-                    TaskDB.getInstance(context));
-        }
-        return instance;
     }
 
     public void saveTaskToRepo(TaskInfo taskInfo, List<ImagesInfo> imageSources, ArrayList<SubTaskInfo> subTasks, boolean isEdit) {

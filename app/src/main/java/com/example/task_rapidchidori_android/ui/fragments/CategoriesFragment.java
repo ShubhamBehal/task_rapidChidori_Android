@@ -20,16 +20,17 @@ import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.ui.adapters.EditCategoriesListAdapter;
 import com.example.task_rapidchidori_android.ui.interfaces.OnCategoriesEditDeleteListener;
-import com.example.task_rapidchidori_android.ui.viewmodelfactories.CategoriesViewModelFactory;
 import com.example.task_rapidchidori_android.ui.viewmodels.CategoriesViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import dagger.hilt.android.AndroidEntryPoint;
 
+@AndroidEntryPoint
 public class CategoriesFragment extends Fragment implements OnCategoriesEditDeleteListener {
 
-    public CategoriesViewModel viewModel;
+    private CategoriesViewModel viewModel;
     private List<CategoryInfo> categories;
     private EditCategoriesListAdapter adapter;
     private RecyclerView rvEditCategory;
@@ -45,10 +46,11 @@ public class CategoriesFragment extends Fragment implements OnCategoriesEditDele
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        viewModel = new ViewModelProvider(this).get(CategoriesViewModel.class);
         initViews(view);
-        configViews();
         setUpObservers();
         setAdapter();
+        viewModel.getAllCategories();
     }
 
 
@@ -56,12 +58,6 @@ public class CategoriesFragment extends Fragment implements OnCategoriesEditDele
         rvEditCategory = view.findViewById(R.id.rvEditCategory);
     }
 
-    private void configViews() {
-        viewModel = new ViewModelProvider(this,
-                new CategoriesViewModelFactory(requireActivity().getApplication()))
-                .get(CategoriesViewModel.class);
-
-    }
 
     private void setUpObservers() {
         viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::showCategoryList);

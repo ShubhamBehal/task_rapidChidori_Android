@@ -1,7 +1,5 @@
 package com.example.task_rapidchidori_android.ui.viewmodels;
 
-import android.app.Application;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -14,13 +12,19 @@ import com.example.task_rapidchidori_android.helper.SingleLiveEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+
+@HiltViewModel
 public class MyTasksViewModel extends ViewModel {
     private final CategoryRepo categoryRepo;
     private final TaskRepo taskRepo;
 
-    public MyTasksViewModel(Application mApplication) {
-        categoryRepo = CategoryRepo.getInstance(mApplication.getApplicationContext());
-        taskRepo = TaskRepo.getInstance(mApplication.getApplicationContext());
+    @Inject
+    public MyTasksViewModel(TaskRepo taskRepo, CategoryRepo categoryRepo) {
+        this.taskRepo = taskRepo;
+        this.categoryRepo = categoryRepo;
     }
 
     public void addDefaultCategories() {

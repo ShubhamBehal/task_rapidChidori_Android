@@ -1,5 +1,6 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
+
 import static com.example.task_rapidchidori_android.helper.Constants.DEFAULT_CATEGORY;
 import static com.example.task_rapidchidori_android.helper.Constants.TASK_ID;
 
@@ -37,7 +38,6 @@ import com.example.task_rapidchidori_android.ui.adapters.CategoriesListAdapter;
 import com.example.task_rapidchidori_android.ui.adapters.TaskListAdapter;
 import com.example.task_rapidchidori_android.ui.interfaces.OnCategorySelect;
 import com.example.task_rapidchidori_android.ui.interfaces.TaskItemClickListener;
-import com.example.task_rapidchidori_android.ui.viewmodelfactories.MyTasksViewModelFactory;
 import com.example.task_rapidchidori_android.ui.viewmodels.MyTasksViewModel;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -45,6 +45,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class MyTasksFragment extends Fragment implements View.OnClickListener, OnCategorySelect,
         TaskItemClickListener {
 
@@ -109,9 +112,8 @@ public class MyTasksFragment extends Fragment implements View.OnClickListener, O
     }
 
     private void configViews() {
-        viewModel = new ViewModelProvider(this,
-                new MyTasksViewModelFactory(requireActivity().getApplication()))
-                .get(MyTasksViewModel.class);
+
+        viewModel = new ViewModelProvider(this).get(MyTasksViewModel.class);
 
         animOpen = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_open);
         animClose = AnimationUtils.loadAnimation(getActivity(), R.anim.fab_close);

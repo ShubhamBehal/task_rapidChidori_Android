@@ -10,6 +10,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.task_rapidchidori_android.R;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class TaskActivity extends AppCompatActivity {
 
     @Override

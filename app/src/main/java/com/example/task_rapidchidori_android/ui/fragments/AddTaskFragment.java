@@ -62,7 +62,6 @@ import com.example.task_rapidchidori_android.ui.adapters.ImagesAdapter;
 import com.example.task_rapidchidori_android.ui.adapters.SubTaskListAdapter;
 import com.example.task_rapidchidori_android.ui.interfaces.ImagesClickListener;
 import com.example.task_rapidchidori_android.ui.interfaces.SubTaskCompleteListener;
-import com.example.task_rapidchidori_android.ui.viewmodelfactories.AddTaskViewModelFactory;
 import com.example.task_rapidchidori_android.ui.viewmodels.AddTaskViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -76,6 +75,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class AddTaskFragment extends Fragment implements View.OnClickListener, ImagesClickListener,
         SubTaskCompleteListener {
     private final ArrayList<Bitmap> bitmaps = new ArrayList<>();
@@ -293,9 +295,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
 
 
     private void configViews() {
-        viewModel = new ViewModelProvider(this,
-                new AddTaskViewModelFactory(requireActivity().getApplication()))
-                .get(AddTaskViewModel.class);
+        viewModel = new ViewModelProvider(this).get(AddTaskViewModel.class);
 
         Objects.requireNonNull(((TaskActivity) requireActivity()).getSupportActionBar())
                 .setTitle(taskId != 0 ? R.string.edit_task_head : R.string.add_task_head);
@@ -435,7 +435,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             showDeleteAudioWarningDialog();
         } else if (view.getId() == R.id.btn_mark_complete) {
             showCompleteWarningDialog();
-        }else if (view.getId() == R.id.iv_add_category){
+        } else if (view.getId() == R.id.iv_add_category) {
             openAddCategoryDialog();
         }
     }
