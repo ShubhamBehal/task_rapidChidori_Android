@@ -9,6 +9,7 @@ import com.example.task_rapidchidori_android.data.models.ImagesInfo;
 import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -27,7 +28,7 @@ public interface TaskDao {
     void insertImages(List<ImagesInfo> images);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertSubTasks(List<SubTaskInfo> subTasks);
+    void insertSubTasks(ArrayList<SubTaskInfo> subTasks);
 
     @Query("SELECT * FROM tasks WHERE taskID LIKE :taskId")
     TaskInfo getTaskByTaskId(long taskId);
@@ -62,4 +63,7 @@ public interface TaskDao {
 
     @Query("UPDATE tasks SET category = :selectedCategory WHERE category= :oldCategory")
     void updateCategoryName(String oldCategory, String selectedCategory);
+
+    @Query("UPDATE subTasks SET isComplete = 1 WHERE taskId= :taskId AND subTaskId= :subTaskId")
+    void updateSubTask(long taskId, int subTaskId);
 }

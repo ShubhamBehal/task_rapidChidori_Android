@@ -13,8 +13,11 @@ public class SubTaskInfo {
 
     public String subTaskTitle;
 
-    public SubTaskInfo(long taskId, String subTaskTitle) {
+    public boolean isComplete;
+
+    public SubTaskInfo(long taskId, String subTaskTitle, boolean isComplete) {
         this.taskId = taskId;
         this.subTaskTitle = subTaskTitle;
+        this.isComplete = isComplete;
     }
 }

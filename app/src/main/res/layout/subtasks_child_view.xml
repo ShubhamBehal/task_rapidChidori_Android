@@ -17,8 +17,8 @@
         android:background="@color/cream"
         android:padding="@dimen/dp_10">
 
-        <RadioButton
-            android:id="@+id/rb_done"
+        <CheckBox
+            android:id="@+id/cb_done"
             android:layout_width="30dp"
             android:layout_height="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -33,7 +33,7 @@
             android:padding="@dimen/dp_4"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20"
-            app:layout_constraintBottom_toTopOf="@id/rb_done"
+            app:layout_constraintBottom_toTopOf="@id/cb_done"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="This is demo subtask" />
 

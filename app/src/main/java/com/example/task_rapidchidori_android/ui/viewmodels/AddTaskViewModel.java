@@ -42,16 +42,15 @@ public class AddTaskViewModel extends ViewModel {
     }
 
     public void saveTaskToRepo(TaskInfo taskInfo, ArrayList<String> imageSources,
-                               ArrayList<String> subtaskList, boolean isEdit) {
+                               ArrayList<SubTaskInfo> subtaskList, boolean isEdit) {
         List<ImagesInfo> imagesInfoList = new ArrayList<>();
-        List<SubTaskInfo> subTaskInfoList = new ArrayList<>();
         for (String imageSource : imageSources) {
             imagesInfoList.add(new ImagesInfo(taskInfo.taskID, imageSource));
         }
-        for (String subtask : subtaskList) {
-            subTaskInfoList.add(new SubTaskInfo(taskInfo.taskID, subtask));
+        for (SubTaskInfo subTaskInfo : subtaskList) {
+            subTaskInfo.taskId = taskInfo.taskID;
         }
-        taskRepo.saveTaskToRepo(taskInfo, imagesInfoList, subTaskInfoList, isEdit);
+        taskRepo.saveTaskToRepo(taskInfo, imagesInfoList, subtaskList, isEdit);
     }
 
     public MutableLiveData<Boolean> getIsSaved() {
@@ -88,5 +87,9 @@ public class AddTaskViewModel extends ViewModel {
 
     public void resetIsCompleted() {
         taskRepo.getIsCompleted().postValue(false);
+    }
+
+    public void markSubtaskComplete(SubTaskInfo subTaskInfo) {
+        taskRepo.markSubTaskComplete(subTaskInfo.taskId, subTaskInfo.subTaskId);
     }
 }

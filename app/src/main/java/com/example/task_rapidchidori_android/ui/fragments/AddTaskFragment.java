@@ -80,7 +80,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         SubTaskCompleteListener {
     private final ArrayList<Bitmap> bitmaps = new ArrayList<>();
     private final ArrayList<String> imageSources = new ArrayList<>();
-    private final ArrayList<String> subtaskList = new ArrayList<>();
+    private final ArrayList<SubTaskInfo> subtaskList = new ArrayList<>();
     private FloatingActionButton fabAdd;
     private FloatingActionButton fabImageGallery;
     private FloatingActionButton fabImageCamera;
@@ -358,7 +358,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         });
 
         viewModel.isCompleted().observe(getViewLifecycleOwner(), isSuccess -> {
-            if(isSuccess){
+            if (isSuccess) {
                 Toast.makeText(requireActivity(), getString(R.string.marked_completed),
                         Toast.LENGTH_SHORT).show();
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
@@ -377,9 +377,8 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         });
 
         viewModel.getSubTaskInfo().observe(getViewLifecycleOwner(), subTaskInfos -> {
-            for (SubTaskInfo subTaskInfo : subTaskInfos) {
-                subtaskList.add(subTaskInfo.subTaskTitle);
-            }
+            this.subtaskList.clear();
+            this.subtaskList.addAll(subTaskInfos);
             refreshSubtaskList();
         });
     }
@@ -656,7 +655,8 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                                 getString(R.string.subtask_empty_error),
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        subtaskList.add(etCategory.getText().toString().trim());
+                        subtaskList.add(new SubTaskInfo(taskId,
+                                etCategory.getText().toString().trim(), false));
                         refreshSubtaskList();
                         Toast.makeText(requireActivity(),
                                 getString(R.string.subtask_added_success_msg),
@@ -672,10 +672,25 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             tvSubtaskListHead.setText(R.string.subtask_list_head);
             rvSubtasks.setVisibility(View.VISIBLE);
             subTaskListAdapter.setData(subtaskList);
-            btnMarkTaskComplete.setVisibility(View.GONE);
+
         } else {
             tvSubtaskListHead.setText(R.string.no_subtasks_attached);
             rvSubtasks.setVisibility(View.GONE);
+        }
+
+        handleCompleteTaskButtonVisibility(subtaskList);
+    }
+
+    private void handleCompleteTaskButtonVisibility(ArrayList<SubTaskInfo> subtaskList) {
+        int inCompleteSubtaskCount = 0;
+        for (SubTaskInfo subTaskInfo : subtaskList) {
+            if (!subTaskInfo.isComplete) {
+                inCompleteSubtaskCount++;
+            }
+        }
+        if (inCompleteSubtaskCount > 0) {
+            btnMarkTaskComplete.setVisibility(View.GONE);
+        } else {
             if (taskId != 0) {
                 btnMarkTaskComplete.setVisibility(View.VISIBLE);
             } else {
@@ -825,18 +840,23 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     }
 
     @Override
-    public void onSubTaskComplete(int position) {
+    public void onSubTaskComplete(SubTaskInfo subTaskInfo) {
         new AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.subtask_complete_head)
                 .setMessage(R.string.subtask_complete_body)
-                .setPositiveButton(R.string.yes, (dialog, which) -> removeSubtask(position))
-                .setNegativeButton(R.string.no, null)
+                .setPositiveButton(R.string.yes, (dialog, which) -> removeSubtask(subTaskInfo))
+                .setNegativeButton(R.string.no, (dialog, which) -> refreshSubtaskList())
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
 
-    private void removeSubtask(int position) {
-        subtaskList.remove(position);
+    private void removeSubtask(SubTaskInfo subTaskInfo) {
+        viewModel.markSubtaskComplete(subTaskInfo);
+        for (SubTaskInfo taskInfo : subtaskList) {
+            if (taskInfo.subTaskId == subTaskInfo.subTaskId) {
+                taskInfo.isComplete = true;
+            }
+        }
         refreshSubtaskList();
         Toast.makeText(requireActivity(), getString(R.string.subtask_remove_success),
                 Toast.LENGTH_SHORT)

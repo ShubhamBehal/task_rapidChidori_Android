@@ -13,6 +13,7 @@ import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.helper.SingleLiveEvent;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class TaskRepo {
         return instance;
     }
 
-    public void saveTaskToRepo(TaskInfo taskInfo, List<ImagesInfo> imageSources, List<SubTaskInfo> subTasks, boolean isEdit) {
+    public void saveTaskToRepo(TaskInfo taskInfo, List<ImagesInfo> imageSources, ArrayList<SubTaskInfo> subTasks, boolean isEdit) {
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -136,5 +137,16 @@ public class TaskRepo {
 
     public MutableLiveData<Boolean> getIsCompleted() {
         return isCompleted;
+    }
+
+    public void markSubTaskComplete(long taskId, int subTaskId) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                database.taskDao().updateSubTask(taskId, subTaskId);
+            }
+        };
+        thread.start();
     }
 }
