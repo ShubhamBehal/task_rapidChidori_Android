@@ -92,4 +92,10 @@ public class AddTaskViewModel extends ViewModel {
     public void markSubtaskComplete(SubTaskInfo subTaskInfo) {
         taskRepo.markSubTaskComplete(subTaskInfo.taskId, subTaskInfo.subTaskId);
     }
+
+    public void addCategoryToRepo(String category) {
+        List<CategoryInfo> categories = new ArrayList<>();
+        categories.add(new CategoryInfo(category, false));
+        categoryRepo.addCategoriesToRepo(categories);
+    }
 }

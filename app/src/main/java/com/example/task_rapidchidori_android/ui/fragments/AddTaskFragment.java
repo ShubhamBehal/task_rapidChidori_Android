@@ -123,6 +123,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private TextView tvAudioHead;
     private long taskId;
     private Button btnMarkTaskComplete;
+    private ImageView ivAddCategory;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -287,6 +288,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         tvSubtaskListHead = view.findViewById(R.id.tv_attached_subtasks_head);
         tvAudioHead = view.findViewById(R.id.tv_audio_head);
         btnMarkTaskComplete = view.findViewById(R.id.btn_mark_complete);
+        ivAddCategory = view.findViewById(R.id.iv_add_category);
     }
 
 
@@ -334,6 +336,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         btnPlayStopAudio.setOnClickListener(this);
         btnDeleteAudio.setOnClickListener(this);
         btnMarkTaskComplete.setOnClickListener(this);
+        ivAddCategory.setOnClickListener(this);
 
         viewModel.getCategoryLiveData().observe(getViewLifecycleOwner(), this::setUpSpinner);
 
@@ -432,7 +435,33 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             showDeleteAudioWarningDialog();
         } else if (view.getId() == R.id.btn_mark_complete) {
             showCompleteWarningDialog();
+        }else if (view.getId() == R.id.iv_add_category){
+            openAddCategoryDialog();
         }
+    }
+
+    private void openAddCategoryDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        LayoutInflater inflater = (requireActivity()).getLayoutInflater();
+        builder.setTitle(R.string.add_category_title);
+        builder.setCancelable(false);
+        View view = inflater.inflate(R.layout.add_category_dialog_view, null);
+        EditText etCategory = view.findViewById(R.id.et_category);
+        builder.setView(view)
+                .setPositiveButton(R.string.ok, (dialog, id) -> {
+                    if (TextUtils.isEmpty(etCategory.getText())) {
+                        Toast.makeText(requireActivity(),
+                                getString(R.string.category_name_empty_error),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        viewModel.addCategoryToRepo(etCategory.getText().toString());
+                        Toast.makeText(requireActivity(),
+                                getString(R.string.category_added_success_msg),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+        builder.create();
+        builder.show();
     }
 
     private void showCompleteWarningDialog() {

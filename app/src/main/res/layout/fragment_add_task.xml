@@ -83,6 +83,17 @@
                 tools:ignore="RtlSymmetry" />
 
             <ImageView
+                android:id="@+id/iv_add_category"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_add_category"
+                app:layout_constraintBottom_toBottomOf="@id/sp_categories"
+                app:layout_constraintEnd_toEndOf="@id/sp_categories"
+                app:layout_constraintTop_toTopOf="@id/sp_categories" />
+
+            <ImageView
                 android:id="@+id/iv_down_arrow"
                 android:layout_width="@dimen/dp_30"
                 android:layout_height="@dimen/dp_30"
@@ -90,7 +101,7 @@
                 android:importantForAccessibility="no"
                 android:src="@drawable/ic_down_arrow"
                 app:layout_constraintBottom_toBottomOf="@id/sp_categories"
-                app:layout_constraintEnd_toEndOf="@id/sp_categories"
+                app:layout_constraintEnd_toStartOf="@id/iv_add_category"
                 app:layout_constraintTop_toTopOf="@id/sp_categories" />
 
             <TextView
