@@ -1,4 +1,4 @@
-package com.example.task_rapidchidori_android.helper;
+package com.example.task_rapidchidori_android.receivers;
 
 import static com.example.task_rapidchidori_android.helper.Constants.CHANNEL_ID;
 import static com.example.task_rapidchidori_android.helper.Constants.TASK_DESC;
@@ -18,7 +18,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.ui.activities.TaskActivity;
 
-public class AlarmReceiver extends BroadcastReceiver {
+public class TaskReminderReceiver extends BroadcastReceiver {
 
     @SuppressLint("UnspecifiedImmutableFlag")
     @Override

@@ -33,7 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.task_rapidchidori_android.R;
 import com.example.task_rapidchidori_android.data.models.CategoryInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
-import com.example.task_rapidchidori_android.helper.SharedPrefsUtil;
+import com.example.task_rapidchidori_android.data.prefs.SharedPrefsUtil;
 import com.example.task_rapidchidori_android.ui.adapters.CategoriesListAdapter;
 import com.example.task_rapidchidori_android.ui.adapters.TaskListAdapter;
 import com.example.task_rapidchidori_android.ui.interfaces.OnCategorySelect;

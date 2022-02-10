@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".helper.AlarmReceiver"
+            android:name=".receivers.TaskReminderReceiver"
             android:enabled="true"
             android:exported="true" />
     </application>

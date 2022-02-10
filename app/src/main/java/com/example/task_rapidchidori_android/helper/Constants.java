@@ -10,8 +10,8 @@ public class Constants {
     public static final String CHANNEL_ID = "786";
     public static final String TASK_TITLE = "task_title";
     public static final String TASK_DESC = "task_desc";
-    static final String PREFS_NAME = "default_preferences";
-    static final String IS_FIRST_LAUNCH = "is_first_launch";
+    public static final String PREFS_NAME = "default_preferences";
+    public static final String IS_FIRST_LAUNCH = "is_first_launch";
     public static final String DB_NAME = "task_db";
     public static final String DATE_FORMAT_DD_MM_YYYY = "dd/MM/yyyy";
     public static final String IMAGE_TYPE = "image/*";

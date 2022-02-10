@@ -1,4 +1,4 @@
-package com.example.task_rapidchidori_android.helper;
+package com.example.task_rapidchidori_android.data.prefs;
 
 import static com.example.task_rapidchidori_android.helper.Constants.IS_FIRST_LAUNCH;
 import static com.example.task_rapidchidori_android.helper.Constants.PREFS_NAME;

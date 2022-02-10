@@ -67,7 +67,7 @@ import com.example.task_rapidchidori_android.data.models.ImagesInfo;
 import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.typeconverters.ImageBitmapString;
-import com.example.task_rapidchidori_android.helper.AlarmReceiver;
+import com.example.task_rapidchidori_android.receivers.TaskReminderReceiver;
 import com.example.task_rapidchidori_android.ui.activities.TaskActivity;
 import com.example.task_rapidchidori_android.ui.adapters.ImagesAdapter;
 import com.example.task_rapidchidori_android.ui.adapters.SubTaskListAdapter;
@@ -833,7 +833,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private void scheduleNotification(long id) {
         AlarmManager alarmManager = (AlarmManager) requireActivity()
                 .getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(requireActivity(), AlarmReceiver.class);
+        Intent intent = new Intent(requireActivity(), TaskReminderReceiver.class);
         intent.putExtra(TASK_TITLE, Objects.requireNonNull(tietTitle.getText()).toString());
         intent.putExtra(TASK_ID, id);
         PendingIntent pendingIntent;
