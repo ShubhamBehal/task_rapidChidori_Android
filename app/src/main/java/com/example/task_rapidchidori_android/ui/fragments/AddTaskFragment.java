@@ -1,15 +1,23 @@
 package com.example.task_rapidchidori_android.ui.fragments;
 
+import static com.example.task_rapidchidori_android.helper.Constants.DATA;
 import static com.example.task_rapidchidori_android.helper.Constants.DATE_TIME_FORMAT;
+import static com.example.task_rapidchidori_android.helper.Constants.IMAGE_TYPE;
 import static com.example.task_rapidchidori_android.helper.Constants.NULL;
+import static com.example.task_rapidchidori_android.helper.Constants.NULL_STRING;
 import static com.example.task_rapidchidori_android.helper.Constants.TASK_ID;
+import static com.example.task_rapidchidori_android.helper.Constants.TASK_TITLE;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -18,6 +26,7 @@ import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -43,6 +52,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.Group;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -57,6 +67,7 @@ import com.example.task_rapidchidori_android.data.models.ImagesInfo;
 import com.example.task_rapidchidori_android.data.models.SubTaskInfo;
 import com.example.task_rapidchidori_android.data.models.TaskInfo;
 import com.example.task_rapidchidori_android.data.typeconverters.ImageBitmapString;
+import com.example.task_rapidchidori_android.helper.AlarmReceiver;
 import com.example.task_rapidchidori_android.ui.activities.TaskActivity;
 import com.example.task_rapidchidori_android.ui.adapters.ImagesAdapter;
 import com.example.task_rapidchidori_android.ui.adapters.SubTaskListAdapter;
@@ -151,7 +162,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Bitmap bitmap;
                         if (result.getData() != null) {
-                            bitmap = (Bitmap) result.getData().getExtras().get("data");
+                            bitmap = (Bitmap) result.getData().getExtras().get(DATA);
                             bitmaps.add(bitmap);
                             String imageSource = ImageBitmapString.BitMapToString(bitmap);
                             imageSources.add(imageSource);
@@ -415,6 +426,8 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
 
     @Override
     public void onClick(View view) {
+        tietTitle.clearFocus();
+        tietDesc.clearFocus();
         if (view.getId() == R.id.fab_add) {
             animateFAB();
         } else if (view.getId() == R.id.fab_add_image_gallery) {
@@ -575,6 +588,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private void startStopRecording() {
         if (isAudioRecording) {
             mRecorder.stop();
@@ -582,8 +596,11 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
             isAudioRecording = false;
             ivStartRecording.setImageResource(R.drawable.ic_record_start);
         } else {
-            recordedAudioPath = Environment.getExternalStorageDirectory() + File.separator
-                    + Environment.DIRECTORY_DCIM + File.separator + Calendar.getInstance().getTimeInMillis() + ".3gp";
+            recordedAudioPath = String.format(getString(R.string.audio_path),
+                    Environment.getExternalStorageDirectory(),
+                    File.separator, Environment.DIRECTORY_DCIM,
+                    File.separator, Calendar.getInstance().getTimeInMillis(),
+                    getString(R.string.audio_extension));
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -731,7 +748,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
     private void handleOnGalleryClick() {
         Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
         galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        galleryIntent.setType("image/*");
+        galleryIntent.setType(IMAGE_TYPE);
         galleryLauncher.launch(galleryIntent);
     }
 
@@ -763,6 +780,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
                             (view1, hourOfDay, minute) -> {
                                 date.set(Calendar.HOUR_OF_DAY, hourOfDay);
                                 date.set(Calendar.MINUTE, minute);
+                                date.set(Calendar.SECOND, 0);
                                 AddTaskFragment.this.onDateTimeSelected();
                             }, currentDate.get(Calendar.HOUR_OF_DAY),
                             currentDate.get(Calendar.MINUTE),
@@ -800,6 +818,7 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.save_task) {
@@ -809,21 +828,48 @@ public class AddTaskFragment extends Fragment implements View.OnClickListener, I
         return super.onOptionsItemSelected(item);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private void scheduleNotification(long id) {
+        AlarmManager alarmManager = (AlarmManager) requireActivity()
+                .getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(requireActivity(), AlarmReceiver.class);
+        intent.putExtra(TASK_TITLE, Objects.requireNonNull(tietTitle.getText()).toString());
+        intent.putExtra(TASK_ID, id);
+        PendingIntent pendingIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getBroadcast(requireContext()
+                    .getApplicationContext(), 0, intent, PendingIntent.FLAG_MUTABLE);
+        } else {
+            pendingIntent = PendingIntent.getBroadcast(requireContext()
+                    .getApplicationContext(), 0, intent, 0);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                    date.getTimeInMillis(), pendingIntent);
+        } else {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, date.getTimeInMillis(),
+                    pendingIntent);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.S)
     private void handleTaskSaveClick() {
-        TaskInfo taskInfo =
-                new TaskInfo(
-                        taskId != 0 ? taskId :
-                                Calendar.getInstance().getTimeInMillis(),
-                        Objects.requireNonNull(tietTitle.getText()).toString(),
-                        Objects.requireNonNull(tietDesc.getText()).toString(),
-                        spCategories.getSelectedItem().toString(),
-                        tvDueDate.getText().toString(),
-                        DateFormat.format(DATE_TIME_FORMAT,
-                                Calendar.getInstance().getTimeInMillis()).toString(),
-                        audioFile != null ? audioFile.toString() : "null"
-                );
         if (isInputValid()) {
+            TaskInfo taskInfo =
+                    new TaskInfo(
+                            taskId != 0 ? taskId :
+                                    Calendar.getInstance().getTimeInMillis(),
+                            Objects.requireNonNull(tietTitle.getText()).toString(),
+                            Objects.requireNonNull(tietDesc.getText()).toString(),
+                            spCategories.getSelectedItem().toString(),
+                            tvDueDate.getText().toString(),
+                            DateFormat.format(DATE_TIME_FORMAT,
+                                    Calendar.getInstance().getTimeInMillis()).toString(),
+                            audioFile != null ? audioFile.toString() : NULL_STRING
+                    );
             viewModel.saveTaskToRepo(taskInfo, imageSources, subtaskList, taskId != 0);
+            scheduleNotification(taskInfo.taskID);
         }
     }
 

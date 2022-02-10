@@ -1,5 +1,7 @@
 package com.example.task_rapidchidori_android.data.db;
 
+import static com.example.task_rapidchidori_android.helper.Constants.DB_NAME;
+
 import android.content.Context;
 
 import androidx.room.Database;
@@ -22,7 +24,7 @@ public abstract class TaskDB extends RoomDatabase {
     public static synchronized TaskDB getInstance(Context context) {
         if (instance == null) {
             instance = Room.databaseBuilder(context.getApplicationContext(),
-                    TaskDB.class, "task_db")
+                    TaskDB.class, DB_NAME)
                     .fallbackToDestructiveMigration()
                     .build();
         }

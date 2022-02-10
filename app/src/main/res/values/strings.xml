@@ -58,4 +58,8 @@
     <string name="delete_cat_desc">Are you sure you want to delete this category?</string>
     <string name="edit_cat_title">Edit Category </string>
     <string name="cat_edit_success">Category edited Successfully</string>
+    <string name="notification_head">Task Reminder</string>
+    <string name="notification_body_text">%s is due in a few minute(s). Click to see details.</string>
+    <string name="audio_extension">.3gp</string>
+    <string name="audio_path">%s%s%s%s%d%s</string>
 </resources>

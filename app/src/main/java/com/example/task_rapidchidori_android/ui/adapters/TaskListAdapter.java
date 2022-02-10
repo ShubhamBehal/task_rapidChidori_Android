@@ -1,5 +1,7 @@
 package com.example.task_rapidchidori_android.ui.adapters;
 
+import static com.example.task_rapidchidori_android.helper.Constants.DATE_FORMAT_DD_MM_YYYY;
+
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,9 +86,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             Collections.sort(this.tasks, (s1, s2) ->
             {
                 try {
-                    return Objects.requireNonNull(new SimpleDateFormat("dd/MM/yyyy")
+                    return Objects.requireNonNull(new SimpleDateFormat(DATE_FORMAT_DD_MM_YYYY)
                             .parse(s1.dateCreated))
-                            .compareTo(new SimpleDateFormat("dd/MM/yyyy")
+                            .compareTo(new SimpleDateFormat(DATE_FORMAT_DD_MM_YYYY)
                                     .parse(s2.dateCreated));
                 } catch (ParseException e) {
                     e.printStackTrace();

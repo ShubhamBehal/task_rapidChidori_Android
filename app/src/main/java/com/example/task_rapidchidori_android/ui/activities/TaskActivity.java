@@ -1,5 +1,12 @@
 package com.example.task_rapidchidori_android.ui.activities;
 
+import static com.example.task_rapidchidori_android.helper.Constants.CHANNEL_DESC;
+import static com.example.task_rapidchidori_android.helper.Constants.CHANNEL_ID;
+import static com.example.task_rapidchidori_android.helper.Constants.CHANNEL_NAME;
+
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +28,7 @@ public class TaskActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tasks);
 
         configViews();
+        createNotificationChannel();
     }
 
     private void configViews() {
@@ -36,5 +44,16 @@ public class TaskActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         return Navigation.findNavController(this, R.id.nav_host_fragment).navigateUp();
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    CHANNEL_NAME, importance);
+            channel.setDescription(CHANNEL_DESC);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

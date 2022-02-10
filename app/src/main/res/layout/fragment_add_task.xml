@@ -94,7 +94,6 @@
                 app:layout_constraintTop_toTopOf="@id/sp_categories" />
 
             <ImageView
-                android:id="@+id/iv_down_arrow"
                 android:layout_width="@dimen/dp_30"
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginEnd="@dimen/dp_10"
